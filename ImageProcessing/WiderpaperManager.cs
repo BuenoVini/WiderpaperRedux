@@ -2,8 +2,8 @@
 
 public static class WiderpaperManager
 {
-	private static Image<Rgba32>? _imgInput;
-	private static Image<Rgba32>? _imgOutput;
+    private static Image<Rgba32>? _imgInput;
+    private static Image<Rgba32>? _imgOutput;
 
     #region Private Methods
     private static void ValidateImageInput()
@@ -21,15 +21,15 @@ public static class WiderpaperManager
 
     #region Public Methods
     public static void LoadImage(string imgPath) => _imgInput = Image.Load<Rgba32>(imgPath);
-	public static void SaveImage(string imgPath)
-	{
-		ValidateImageOutput();
+    public static void SaveImage(string imgPath)
+    {
+        ValidateImageOutput();
 
-		_imgOutput!.Save(imgPath);
-	}
+        _imgOutput!.Save(imgPath);
+    }
 
-	public static void ApplyMirror()
-	{
+    public static void ApplyMirror()
+    {
         ValidateImageInput();
 
         /* ALGORITHM FROM MY PREVIOUS PROJECT (https://github.com/BuenoVini/Widerpaper/) */
@@ -79,18 +79,22 @@ public static class WiderpaperManager
 
         /* creating the convolution matrix */
         int[,] kernel = new int[kernelSize, kernelSize];
+        int kernelNormalizationValue = 0;
         for (int i = 0; i < kernelSize; i++)
+        {
             for (int j = 0; j < kernelSize; j++)
+            {
                 kernel[i, j] = 1;
-
-        var temp = new Rgba32[kernelSize, kernelSize];
+                kernelNormalizationValue += kernel[i, j];
+            }
+        }
 
         /* applying the kernel to the entire image */
         for (int y = 0; y < _imgInput!.Height; y++)
         {
             for (int x = 0; x < _imgInput.Width; x++)
             {
-                byte sumR = 0, sumG = 0, sumB = 0;
+                int sumR = 0, sumG = 0, sumB = 0;
 
                 for (int i = 0; i < kernelSize; i++)
                 {
@@ -101,28 +105,24 @@ public static class WiderpaperManager
 
                         if (relativeX < 0 || relativeY < 0 || relativeX >= _imgInput.Width || relativeY >= _imgInput.Height )
                         {
-                            temp[i, j].R = 0;
-                            temp[i, j].G = 0;
-                            temp[i, j].B = 0;
+                            sumR += 0;
+                            sumG += 0;
+                            sumB += 0;
                         }
                         else
                         {
-                            temp[i, j].R = (byte)(_imgInput[relativeX, relativeY].R * kernel[i, j]);
-                            temp[i, j].G = (byte)(_imgInput[relativeX, relativeY].G * kernel[i, j]);
-                            temp[i, j].B = (byte)(_imgInput[relativeX, relativeY].B * kernel[i, j]);
+                            sumR += _imgInput[relativeX, relativeY].R * kernel[i, j];
+                            sumG += _imgInput[relativeX, relativeY].G * kernel[i, j];
+                            sumB += _imgInput[relativeX, relativeY].B * kernel[i, j];
                         }
-
-                        sumR += temp[i, j].R;
-                        sumG += temp[i, j].G;
-                        sumB += temp[i, j].B;
                     }
                 }
 
-                sumR = (byte)(sumR / kernelSize * kernelSize);
-                sumG = (byte)(sumG / kernelSize * kernelSize);
-                sumB = (byte)(sumB / kernelSize * kernelSize);
+                sumR /= kernelNormalizationValue;
+                sumG /= kernelNormalizationValue;
+                sumB /= kernelNormalizationValue;
 
-                _imgOutput[x, y] = new Rgba32(sumR, sumG, sumB);
+                _imgOutput[x, y] = new Rgba32((byte)sumR, (byte)sumG, (byte)sumB);
             }
         }
     }

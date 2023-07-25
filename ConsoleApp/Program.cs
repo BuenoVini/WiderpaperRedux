@@ -30,7 +30,7 @@ Console.WriteLine("\nProcessing...");
 switch (algorithmChosen)
 {
     case 0: WiderpaperManager.ApplyMirror(); break;
-    case 1: WiderpaperManager.ApplyMeanBlur(); break;
+    case 1: WiderpaperManager.ApplyMeanBlur(kernelSize: 21); break;
 }
 
 WiderpaperManager.SaveImage(IMAGE_DIR_PATH + "output.jpg");
