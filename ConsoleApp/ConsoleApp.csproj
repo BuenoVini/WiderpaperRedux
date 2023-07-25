@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ImageProcessing\ImageProcessing.csproj" />
+    <ProjectReference Include="..\ImageProcessing\Widerpaper.csproj" />
   </ItemGroup>
 
 </Project>
