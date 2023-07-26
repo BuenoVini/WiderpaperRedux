@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Diagnostics;
 using Widerpaper;
 
 #region Selecting Image
@@ -27,11 +28,18 @@ int algorithmChosen = int.Parse(Console.ReadLine());
 
 Console.WriteLine("\nProcessing...");
 
+Stopwatch stopwatch = new();
 switch (algorithmChosen)
 {
     case 0: WiderpaperManager.ApplyMirror(); break;
-    case 1: WiderpaperManager.ApplyMeanBlur(kernelSize: 21); break;
+    case 1: 
+        stopwatch.Start();
+        WiderpaperManager.ApplyMeanBlur(kernelSize: 15);
+        stopwatch.Stop();
+        break;
 }
+
+Console.WriteLine(stopwatch.ElapsedMilliseconds / 1000 + "s");
 
 WiderpaperManager.SaveImage(IMAGE_DIR_PATH + "output.jpg");
 Console.WriteLine("Image successfully resized!");

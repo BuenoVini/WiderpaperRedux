@@ -90,7 +90,8 @@ public static class WiderpaperManager
         }
 
         /* applying the kernel to the entire image */
-        for (int y = 0; y < _imgInput!.Height; y++)
+        //for (int y = 0; y < _imgInput.Height; y++)
+        Parallel.For(0, _imgInput.Height, y =>
         {
             for (int x = 0; x < _imgInput.Width; x++)
             {
@@ -103,7 +104,7 @@ public static class WiderpaperManager
                         int relativeX = x + j - (kernelSize - 1) / 2;
                         int relativeY = y + i - (kernelSize - 1) / 2;
 
-                        if (relativeX < 0 || relativeY < 0 || relativeX >= _imgInput.Width || relativeY >= _imgInput.Height )
+                        if (relativeX < 0 || relativeY < 0 || relativeX >= _imgInput.Width || relativeY >= _imgInput.Height)
                         {
                             sumR += 0;
                             sumG += 0;
@@ -124,7 +125,7 @@ public static class WiderpaperManager
 
                 _imgOutput[x, y] = new Rgba32((byte)sumR, (byte)sumG, (byte)sumB);
             }
-        }
+        });
     }
     #endregion
 }
