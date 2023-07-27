@@ -21,8 +21,8 @@ Console.Clear();
 
 #region Selecting Resize Algorithm
 
-Image<Rgba32> imgInput = WiderpaperManager<Rgba32>.LoadImage(fileChosen);
-Image<Rgba32> imgOutput;
+WiderpaperImage imgInput = new (fileChosen);
+WiderpaperImage imgOutput;
 
 Console.WriteLine("[0] Apply Mirror\n[1] Apply Mean Blur");
 
@@ -34,17 +34,22 @@ Console.WriteLine("\nProcessing...");
 Stopwatch stopwatch = new();
 switch (algorithmChosen)
 {
-    case 0: imgOutput = WiderpaperManager<Rgba32>.ApplyMirror(imgInput); break;
-    case 1: 
-        imgOutput = WiderpaperManager<Rgba32>.ApplyMirror(imgInput);
-        imgOutput = WiderpaperManager<Rgba32>.ApplyGaussianBlur(imgOutput, sigmaValue: 15);
+    case 0: 
+        imgOutput = WiderpaperProcessing.ApplyMirror(imgInput);
         break;
 
-    default: imgOutput = new Image<Rgba32>(500, 500); break;
+    case 1: 
+        imgOutput = WiderpaperProcessing.ApplyMirror(imgInput);
+        imgOutput = WiderpaperProcessing.ApplyGaussianBlur(imgOutput, sigmaValue: 15);
+        break;
+
+    default:
+        imgOutput = WiderpaperImage.LoadImage("");
+        break;
 }
 
 Console.WriteLine(stopwatch.ElapsedMilliseconds + "ms");
 
-WiderpaperManager<Rgba32>.SaveImage(imgOutput, IMAGE_DIR_PATH + "output.jpg");
+imgOutput.SaveImage(IMAGE_DIR_PATH + "output.jpg");
 Console.WriteLine("Image successfully resized!");
 #endregion
