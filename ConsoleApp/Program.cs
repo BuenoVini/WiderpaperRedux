@@ -34,12 +34,12 @@ switch (algorithmChosen)
     case 0: WiderpaperManager.ApplyMirror(); break;
     case 1: 
         stopwatch.Start();
-        WiderpaperManager.ApplyMeanBlur(kernelSize: 15);
+        WiderpaperManager.ApplyGaussianBlur(sigmaValue: 15);
         stopwatch.Stop();
         break;
 }
 
-Console.WriteLine(stopwatch.ElapsedMilliseconds / 1000 + "s");
+Console.WriteLine(stopwatch.ElapsedMilliseconds + "ms");
 
 WiderpaperManager.SaveImage(IMAGE_DIR_PATH + "output.jpg");
 Console.WriteLine("Image successfully resized!");
