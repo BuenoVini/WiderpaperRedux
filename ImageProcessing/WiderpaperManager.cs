@@ -1,66 +1,38 @@
 ﻿namespace Widerpaper;
 
-public static class WiderpaperManager
+public static class WiderpaperManager<TPixel> where TPixel : unmanaged, IPixel<TPixel>
 {
-    private static Image<Rgba32>? _imgInput;
-    private static Image<Rgba32>? _imgOutput;
+    public static Image<TPixel> LoadImage(string path) => Image.Load<TPixel>(path);
+    public static void SaveImage(Image img, string path) => img.Save(path);
 
-    #region Private Methods
-    private static void ValidateImageInput()
+    public static Image<TPixel> ApplyGaussianBlur(Image<TPixel> imgSource, int sigmaValue = 3) 
+        => imgSource.Clone(img => img.GaussianBlur(sigmaValue));
+
+    public static Image<TPixel> ApplyMirror(Image<TPixel> imgSource)
     {
-        if (_imgInput is null)
-            throw new NullReferenceException("No image was loaded to memory.");
-    }
+        Image<TPixel> imgDest = new(imgSource.Height * 21 / 9, imgSource.Height);
 
-    private static void ValidateImageOutput()
-    {
-        if (_imgOutput is null)
-            throw new NullReferenceException("No image was resized yet to be saved.");
-    }
-    #endregion
+        int qtyPixelsToCopy = (imgDest.Width - imgSource.Width) / 2;
 
-    #region Public Methods
-    public static void LoadImage(string imgPath) => _imgInput = Image.Load<Rgba32>(imgPath);
-    public static void SaveImage(string imgPath)
-    {
-        ValidateImageOutput();
-
-        _imgOutput!.Save(imgPath);
-    }
-
-    public static void ApplyMirror()
-    {
-        ValidateImageInput();
-
-        _imgOutput = new(_imgInput!.Height * 21 / 9, _imgInput.Height);
-
-        int qtyPixelsToCopy = (_imgOutput.Width - _imgInput.Width) / 2;
-
-        _imgInput.ProcessPixelRows(_imgOutput, (input, output) =>
+        imgSource.ProcessPixelRows(imgDest, (src, dest) =>
         {
-            for (int y = 0; y < input.Height; y++)
+            for (int y = 0; y < src.Height; y++)
             {
-                Span<Rgba32> inputRow = input.GetRowSpan(y);
-                Span<Rgba32> outputRow = output.GetRowSpan(y);
+                Span<TPixel> srcRow = src.GetRowSpan(y);
+                Span<TPixel> destRow = dest.GetRowSpan(y);
 
-                inputRow.CopyTo(outputRow[qtyPixelsToCopy..^qtyPixelsToCopy]);
+                srcRow.CopyTo(destRow[qtyPixelsToCopy..^qtyPixelsToCopy]);
 
-                Span<Rgba32> leftSpan = inputRow[..qtyPixelsToCopy];
+                Span<TPixel> leftSpan = srcRow[..qtyPixelsToCopy];
                 leftSpan.Reverse();
-                leftSpan.CopyTo(outputRow[..qtyPixelsToCopy]);
+                leftSpan.CopyTo(destRow[..qtyPixelsToCopy]);
 
-                Span<Rgba32> rightSpan = inputRow[^qtyPixelsToCopy..];
+                Span<TPixel> rightSpan = srcRow[^qtyPixelsToCopy..];
                 rightSpan.Reverse();
-                rightSpan.CopyTo(outputRow[^qtyPixelsToCopy..]);
+                rightSpan.CopyTo(destRow[^qtyPixelsToCopy..]);
             }
         });
-    }
 
-    public static void ApplyGaussianBlur(int sigmaValue = 3)
-    {
-        ValidateImageInput();
-
-       _imgOutput = _imgInput!.Clone(x => x.GaussianBlur(sigmaValue));
+        return imgDest;
     }
-    #endregion
 }

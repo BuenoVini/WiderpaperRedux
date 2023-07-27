@@ -1,5 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using System.Diagnostics;
 using Widerpaper;
 
@@ -19,7 +21,8 @@ Console.Clear();
 
 #region Selecting Resize Algorithm
 
-WiderpaperManager.LoadImage(fileChosen);
+Image<Rgba32> imgInput = WiderpaperManager<Rgba32>.LoadImage(fileChosen);
+Image<Rgba32> imgOutput;
 
 Console.WriteLine("[0] Apply Mirror\n[1] Apply Mean Blur");
 
@@ -31,16 +34,17 @@ Console.WriteLine("\nProcessing...");
 Stopwatch stopwatch = new();
 switch (algorithmChosen)
 {
-    case 0: WiderpaperManager.ApplyMirror(); break;
+    case 0: imgOutput = WiderpaperManager<Rgba32>.ApplyMirror(imgInput); break;
     case 1: 
-        stopwatch.Start();
-        WiderpaperManager.ApplyGaussianBlur(sigmaValue: 15);
-        stopwatch.Stop();
+        imgOutput = WiderpaperManager<Rgba32>.ApplyMirror(imgInput);
+        imgOutput = WiderpaperManager<Rgba32>.ApplyGaussianBlur(imgOutput, sigmaValue: 15);
         break;
+
+    default: imgOutput = new Image<Rgba32>(500, 500); break;
 }
 
 Console.WriteLine(stopwatch.ElapsedMilliseconds + "ms");
 
-WiderpaperManager.SaveImage(IMAGE_DIR_PATH + "output.jpg");
+WiderpaperManager<Rgba32>.SaveImage(imgOutput, IMAGE_DIR_PATH + "output.jpg");
 Console.WriteLine("Image successfully resized!");
 #endregion
