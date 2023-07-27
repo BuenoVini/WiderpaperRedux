@@ -20,11 +20,10 @@ string fileChosen = files[int.Parse(Console.ReadLine())];
 Console.Clear();
 
 #region Selecting Resize Algorithm
-
 WiderpaperImage imgInput = new (fileChosen);
 WiderpaperImage imgOutput;
 
-Console.WriteLine("[0] Apply Mirror\n[1] Apply Mean Blur");
+Console.WriteLine("[0] Apply Mirror\n[1] Apply Blur\n[2] Apply Mirror with Blur\n[3] Apply Mirror with Gradient Blur");
 
 Console.Write("\nSelect algorithm: ");
 int algorithmChosen = int.Parse(Console.ReadLine());
@@ -39,8 +38,15 @@ switch (algorithmChosen)
         break;
 
     case 1: 
-        imgOutput = WiderpaperProcessing.ApplyMirror(imgInput);
-        imgOutput = WiderpaperProcessing.ApplyGaussianBlur(imgOutput, sigmaValue: 15);
+        imgOutput = WiderpaperProcessing.ApplyBlur(imgInput);
+        break;
+
+    case 2:
+        imgOutput = WiderpaperProcessing.ApplyBlurMirror(imgInput, 50);
+        break;
+
+    case 3:
+        imgOutput = WiderpaperProcessing.ApplyGradientBlurMirror(imgInput, 50);
         break;
 
     default:
