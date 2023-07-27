@@ -35,7 +35,7 @@ using (imgOutput = new())
     imgOutput = algorithmChosen switch
     {
         0 => WiderpaperProcessing.ApplyMirror(imgInput),
-        1 => WiderpaperProcessing.ApplyBlur(imgInput),
+        1 => WiderpaperProcessing.ApplyGaussianBlur(imgInput),
         2 => WiderpaperProcessing.ApplyBlurMirror(imgInput, 50),
         3 => WiderpaperProcessing.ApplyGradientBlurMirror(imgInput, 50),
         _ => WiderpaperImage.LoadImage(""),
