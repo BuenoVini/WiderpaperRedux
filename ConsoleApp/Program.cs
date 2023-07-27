@@ -20,7 +20,7 @@ string fileChosen = files[int.Parse(Console.ReadLine())];
 Console.Clear();
 
 #region Selecting Resize Algorithm
-WiderpaperImage imgInput = new (fileChosen);
+using WiderpaperImage imgInput = new (fileChosen);
 WiderpaperImage imgOutput;
 
 Console.WriteLine("[0] Apply Mirror\n[1] Apply Blur\n[2] Apply Mirror with Blur\n[3] Apply Mirror with Gradient Blur");
@@ -30,31 +30,17 @@ int algorithmChosen = int.Parse(Console.ReadLine());
 
 Console.WriteLine("\nProcessing...");
 
-Stopwatch stopwatch = new();
-switch (algorithmChosen)
+using (imgOutput = new())
 {
-    case 0: 
-        imgOutput = WiderpaperProcessing.ApplyMirror(imgInput);
-        break;
-
-    case 1: 
-        imgOutput = WiderpaperProcessing.ApplyBlur(imgInput);
-        break;
-
-    case 2:
-        imgOutput = WiderpaperProcessing.ApplyBlurMirror(imgInput, 50);
-        break;
-
-    case 3:
-        imgOutput = WiderpaperProcessing.ApplyGradientBlurMirror(imgInput, 50);
-        break;
-
-    default:
-        imgOutput = WiderpaperImage.LoadImage("");
-        break;
+    imgOutput = algorithmChosen switch
+    {
+        0 => WiderpaperProcessing.ApplyMirror(imgInput),
+        1 => WiderpaperProcessing.ApplyBlur(imgInput),
+        2 => WiderpaperProcessing.ApplyBlurMirror(imgInput, 50),
+        3 => WiderpaperProcessing.ApplyGradientBlurMirror(imgInput, 50),
+        _ => WiderpaperImage.LoadImage(""),
+    };
 }
-
-Console.WriteLine(stopwatch.ElapsedMilliseconds + "ms");
 
 imgOutput.SaveImage(IMAGE_DIR_PATH + "output.jpg");
 Console.WriteLine("Image successfully resized!");
