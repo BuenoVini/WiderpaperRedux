@@ -1,8 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using System.Diagnostics;
 using Widerpaper;
 
 #region Selecting Image
