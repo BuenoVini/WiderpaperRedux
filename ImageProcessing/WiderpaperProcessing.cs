@@ -4,12 +4,19 @@ namespace Widerpaper;
 
 public static class WiderpaperProcessing
 {
+    const string EX_MSG_NO_IMAGE_LOADED = "No image was loaded in memory.\nTry using WiderpaperImage.LoadImage(path).";
+    const string EX_MSG_IMAGE_DEST = "An exception ocurred when processing the Image Source provided.";
 
     /// <summary>
     /// Applies Gaussian Blur to a copy of Source Image and then returns the new blurred image.
     /// </summary>
     public static WiderpaperImage ApplyGaussianBlur(WiderpaperImage imgSource, int sigmaValue = 3)
-        => new (imgSource._image.Clone(img => img.GaussianBlur(sigmaValue)));
+    {
+        if (imgSource._image is null)
+            throw new NullReferenceException(EX_MSG_NO_IMAGE_LOADED);
+
+        return new (imgSource._image.Clone(img => img.GaussianBlur(sigmaValue)));
+    }
 
 
     /// <summary>
@@ -17,6 +24,9 @@ public static class WiderpaperProcessing
     /// </summary>
     public static WiderpaperImage ApplyMirror(WiderpaperImage imgSource)
     {
+        if (imgSource._image is null)
+            throw new NullReferenceException(EX_MSG_NO_IMAGE_LOADED);
+
         Image<TPixel> imgSrc = imgSource._image;
         Image<TPixel> imgDest = new (imgSrc.Height * 21 / 9, imgSrc.Height);
 
@@ -54,11 +64,17 @@ public static class WiderpaperProcessing
     /// </summary>
     public static WiderpaperImage ApplyBlurMirror(WiderpaperImage imgSource, int blurStrenght)
     {
+        if (imgSource._image is null)
+            throw new NullReferenceException(EX_MSG_NO_IMAGE_LOADED);
+
         /* Applying Gaussian Blur to a copy of Image Source */
         WiderpaperImage imgDest = ApplyGaussianBlur(imgSource, blurStrenght);
 
         /* Mirroring the copy of Image Source blurred to Ultrawide */
         imgDest = ApplyMirror(imgDest);
+
+        if (imgDest._image is null)
+            throw new NullReferenceException(EX_MSG_IMAGE_DEST);
 
         /* Copying original, untouched, Image Source to the blurred Ultrawide image */
         imgDest._image.Mutate(img =>
@@ -76,11 +92,17 @@ public static class WiderpaperProcessing
     /// </summary>
     public static WiderpaperImage ApplyGradientBlurMirror(WiderpaperImage imgSource, int blurStrenght)
     {
+        if (imgSource._image is null)
+            throw new NullReferenceException(EX_MSG_NO_IMAGE_LOADED);
+
         /* Applying Gaussian Blur to a copy of Image Source */
         WiderpaperImage imgDest = ApplyGaussianBlur(imgSource, blurStrenght);
 
         /* Mirroring the copy of Image Source blurred to Ultrawide */
         imgDest = ApplyMirror(imgDest);
+
+        if (imgDest._image is null)
+            throw new NullReferenceException(EX_MSG_IMAGE_DEST);
 
         /* Creating a copy of Image Source untouched to fade its vertical edges */
         Image<TPixel> imgFaded = imgSource._image.Clone();
