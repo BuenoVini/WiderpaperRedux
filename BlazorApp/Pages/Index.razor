@@ -2,60 +2,86 @@
 
 <div class="container">
     <div>
-        <h1 class="text-center"><strong>Widerpaper</strong> Redux</h1>
+        <h1 style="font-size: 41px;" class="text-center"><strong>Widerpaper</strong> <span style="font-weight: lighter">Redux</span></h1>
         <p class="text-center"><small>Made with ❤️ by Vini Bueno</small></p>
     </div>
 
     <div class="row my-4">
-        <label for="formFile" class="form-label">Convert a stardard image to Ultrawide!</label>
-        <input class="form-control" type="file" id="formFile">
+        <h4>
+            <label for="inputImage" class="form-label">
+                Step 1: Choose an image
+            </label>
+        </h4>
+        <input class="form-control" type="file" id="inputImage">
     </div>
 
-    <select @onchange="SelectAlgorithm" class="form-select" aria-label="Select an algorithm">
-        <option selected value="0">Simple Mirror</option>
-        <option value="1">Mirror with Blur</option>
-        <option value="2">Mirror with Faded Blur</option>
-    </select>
-
-    <div class="alert alert-dark" role="alert">
-        @switch (_algorithmChosen)
-        {
-            case 0:
-                <p>This algorithm mirrors the left and right side of the image until it reaches the Ultrawide aspect ratio (21:9).</p>
-                <hr />
-                <p><strong>Use this when:</strong> you have an image with solid background color or repeating pattern.</p>
-                break;
-
-            case 1:
-                <p>This algorithm mirrors the left and right side of the image until it reaches the Ultrawide aspect ratio (21:9). The mirrored area is then blurred with Gaussian Blur.</p>
-                <hr />
-                <label for="blurStrenght" class="form-label"><b>Blur Strenght:</b> @(_blurStrenght)%</label>
-                <input @oninput="ChangeBlurStrenght" type="range" class="form-range" id="blurStrenght" value=@_blurStrenght min="5" max="50" step="5">
-                <hr />
-                <p><strong>Use this when:</strong> the image background is not even or you start seeing too many repeating pattern from the Simple Mirror algorithm.</p>
-                break;
-
-            case 2:
-                <p>This algorithm mirrors the left and right side of the image until it reaches the Ultrawide aspect ratio (21:9). The mirrored area is then blurred with Gaussian Blur. Finally, a fade is added to the left and right edges of the image, given it a smooth transition from the original image to the mirrored area.</p>
-                <hr />
-                <label for="blurStrenght" class="form-label"><b>Blur Strenght:</b> @(_blurStrenght)%</label>
-                <input @oninput="ChangeBlurStrenght" type="range" class="form-range" id="blurStrenght" value=@_blurStrenght min="5" max="50" step="5">
-                <hr />
-                <p><strong>Use this when:</strong> your image already has a blurred background. This will make sure the transition to the mirrored area is smooth.</p>
-                break;
-
-            default:
-                <p>Some error happened... Try again!</p>
-                break;
-        }
-    </div>
+    <hr />
 
     <div class="row my-4">
-        <button type="button" class="btn btn-primary">Start processing</button>
+        <h4>
+            <label for="selectAlgorithm" class="form-label">
+                Step 2: Choose an algorithm
+            </label>
+        </h4>
+        <select id="selectAlgorithm" @onchange="SelectAlgorithm" class="form-select" aria-label="Select an algorithm">
+            <option selected value="0">Simple Mirror</option>
+            <option value="1">Mirror with Blur</option>
+            <option value="2">Mirror with Faded Blur</option>
+        </select>
+        <div class="alert alert-dark" role="alert">
+            @switch (_algorithmChosen)
+            {
+                case 0:
+                    <p>This algorithm mirrors the left and right side of the image until it reaches the Ultrawide aspect ratio (21:9).</p>
+                    <hr />
+                    <p><strong>Use this when:</strong> you have an image with solid background color or repeating pattern.</p>
+                    break;
+
+                case 1:
+                    <p>This algorithm mirrors the left and right side of the image until it reaches the Ultrawide aspect ratio (21:9). The mirrored area is then blurred with Gaussian Blur.</p>
+                    <hr />
+                    <label for="blurStrenght" class="form-label"><b>Blur Strenght:</b> @(_blurStrenght)%</label>
+                    <input @oninput="ChangeBlurStrenght" type="range" class="form-range" id="blurStrenght" value=@_blurStrenght min="5" max="50" step="5">
+                    <hr />
+                    <p><strong>Use this when:</strong> the image background is not even or you start seeing too many repeating pattern from the Simple Mirror algorithm.</p>
+                    break;
+
+                case 2:
+                    <p>This algorithm mirrors the left and right side of the image until it reaches the Ultrawide aspect ratio (21:9). The mirrored area is then blurred with Gaussian Blur. Finally, a fade is added to the left and right edges of the image, given it a smooth transition from the original image to the mirrored area.</p>
+                    <hr />
+                    <label for="blurStrenght" class="form-label"><b>Blur Strenght:</b> @(_blurStrenght)%</label>
+                    <input @oninput="ChangeBlurStrenght" type="range" class="form-range" id="blurStrenght" value=@_blurStrenght min="5" max="50" step="5">
+                    <hr />
+                    <p><strong>Use this when:</strong> your image already has a blurred background. This will make sure the transition to the mirrored area is smooth.</p>
+                    break;
+
+                default:
+                    <p>Some error happened... Try again!</p>
+                    break;
+            }
+        </div>
     </div>
 
+    <hr />
+
     <div class="row my-4">
-        <div class="py-0 px-4 alert alert-light d-flex align-items-center position-relative" role="alert">
+        <h4>
+            <label for="buttonProcess" class="form-label">
+                Step 3: Generate ultrawide image
+            </label>
+        </h4>
+        <button id="buttonProcess" type="button" class="btn btn-primary">Start processing</button>
+    </div>
+
+    @*<hr />
+
+    <div class="row my-4">
+        <h4>
+            <label for="saveImage" class="form-label">
+                Step 4: Save your image
+            </label>
+        </h4>
+        <div id="saveImage" class="py-0 px-4 alert alert-light d-flex align-items-center position-relative" role="alert">
             <div class="col">
                 <div class="row my-2">
                     <strong class="text-center">Your Ultrawide image is ready!</strong>
@@ -70,7 +96,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>*@
 </div>
 
 @code {
