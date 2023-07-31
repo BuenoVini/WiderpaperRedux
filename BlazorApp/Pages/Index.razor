@@ -12,7 +12,7 @@
                 Step 1: Choose an image
             </label>
         </h4>
-        <input class="form-control" type="file" id="inputImage">
+        <input class="form-control" type="file" id="inputImage" disabled="@_isProcessingImage">
     </div>
 
     <hr />
@@ -23,7 +23,7 @@
                 Step 2: Choose an algorithm
             </label>
         </h4>
-        <select id="selectAlgorithm" @onchange="ChangeAlgorithm" class="form-select" aria-label="Select an algorithm">
+        <select id="selectAlgorithm" @onchange="ChangeAlgorithm" class="form-select" aria-label="Select an algorithm" disabled="@_isProcessingImage">
             <option selected value="0">Simple Mirror</option>
             <option value="1">Mirror with Blur</option>
         </select>
@@ -40,9 +40,9 @@
                     <p>This algorithm mirrors the left and right side of the image until it reaches the Ultrawide aspect ratio (21:9). The mirrored area is then blurred with Gaussian Blur.</p>
                     <hr />
                     <label for="blurStrenght" class="form-label"><b>Blur Strenght:</b> @(_blurStrenght*2)%</label>
-                    <input @oninput="ChangeBlurStrenght" type="range" class="form-range" id="blurStrenght" value=@_blurStrenght min="5" max="50" step="5">
+                    <input @oninput="ChangeBlurStrenght" type="range" class="form-range" id="blurStrenght" value=@_blurStrenght min="5" max="50" step="5" disabled="@_isProcessingImage">
                     <div class="form-check form-switch mt-3">
-                        <input @onchange="ChangeBlurTransition" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheck">
+                        <input @onchange="ChangeBlurTransition" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheck" disabled="@_isProcessingImage">
                         <label class="form-check-label" for="flexSwitchCheck">Apply blur transition?</label>
                     </div>
                     <hr />
@@ -60,11 +60,21 @@
 
     <div class="row my-4">
         <h4>
-            <label for="buttonProcess" class="form-label">
+            <label for="buttonProcessImage" class="form-label">
                 Step 3: Generate ultrawide image
             </label>
         </h4>
-        <button id="buttonProcess" type="button" class="btn btn-primary">Start processing</button>
+        <button @onclick="@ProcessImage" id="buttonProcessImage" type="button" class="btn btn-primary" disabled="@_isProcessingImage">
+            @if (!_isProcessingImage)
+            {
+                <span>Start processing</span>
+            }
+            else
+            {
+                <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                <span role="status">Processing your image...</span>
+            }
+        </button>
     </div>
 
     @*<hr />
@@ -97,6 +107,7 @@
     private int _algorithmChosen = 0;
     private int _blurStrenght = 25;
     private bool _shouldBlurTransition = false;
+    private bool _isProcessingImage = false;
 
     private void ChangeAlgorithm(ChangeEventArgs e)
     {
@@ -114,5 +125,10 @@
     {
         if (!bool.TryParse(e.Value.ToString(), out _shouldBlurTransition))
             _shouldBlurTransition = false;
+    }
+
+    private void ProcessImage()
+    {
+        _isProcessingImage = true;
     }
 }
