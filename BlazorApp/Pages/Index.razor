@@ -23,7 +23,7 @@
                 Step 2: Choose an algorithm
             </label>
         </h4>
-        <select id="selectAlgorithm" @onchange="SelectAlgorithm" class="form-select" aria-label="Select an algorithm">
+        <select id="selectAlgorithm" @onchange="ChangeAlgorithm" class="form-select" aria-label="Select an algorithm">
             <option selected value="0">Simple Mirror</option>
             <option value="1">Mirror with Blur</option>
         </select>
@@ -98,7 +98,7 @@
     private int _blurStrenght = 25;
     private bool _shouldBlurTransition = false;
 
-    private void SelectAlgorithm(ChangeEventArgs e)
+    private void ChangeAlgorithm(ChangeEventArgs e)
     {
         if (!int.TryParse(e.Value.ToString(), out _algorithmChosen))
             _algorithmChosen = -1;
