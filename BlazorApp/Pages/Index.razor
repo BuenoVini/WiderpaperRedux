@@ -49,7 +49,7 @@
                 case Algorithm.BlurMirror:
                     <p>This algorithm mirrors the left and right side of the image until it reaches the Ultrawide aspect ratio (21:9). The mirrored area is then blurred with Gaussian Blur.</p>
                     <hr />
-                    <label for="blurStrenght" class="form-label"><b>Blur Strenght:</b> @(_blurStrenght*2)%</label>
+                    <label for="blurStrenght" class="form-label"><b>Blur Strenght:</b> @(_blurStrenght * 2)%</label>
                     <input @oninput="OnChangeBlurStrenght" type="range" class="form-range" id="blurStrenght" value=@_blurStrenght min="5" max="50" step="5" disabled="@_isProcessingImage">
                     <div class="form-check form-switch mt-3">
                         <input @onchange="OnChangeBlurTransition" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheck" disabled="@_isProcessingImage">
@@ -74,7 +74,7 @@
                 Step 3: Generate Ultrawide image
             </label>
         </h4>
-        <button @onclick="@ProcessImage" id="buttonProcessImage" type="button" class="btn btn-primary" disabled="@_isProcessingImage">
+        <button @onclick="@ProcessImageAsync" id="buttonProcessImage" type="button" class="btn btn-primary" disabled="@_isProcessingImage">
             @if (!_isProcessingImage)
             {
                 <span>Start processing</span>
@@ -115,7 +115,7 @@
 </div>
 
 @code {
-    private enum Algorithm {None = -1, SimpleMirror, BlurMirror}
+    private enum Algorithm { None = -1, SimpleMirror, BlurMirror }
 
     private Algorithm _algorithmChosen = Algorithm.SimpleMirror;
     private string _filePath;
@@ -162,7 +162,7 @@
             _shouldBlurTransition = false;
     }
 
-    private void ProcessImage()
+    private async Task ProcessImageAsync()
     {
         _isProcessingImage = true;
 
@@ -174,11 +174,11 @@
             switch (_algorithmChosen)
             {
                 case Algorithm.SimpleMirror:
-                    imgOutput = WiderpaperProcessing.ApplyMirror(imgInput); 
+                    imgOutput = WiderpaperProcessing.ApplyMirror(imgInput);
                     break;
 
                 case Algorithm.BlurMirror:
-                    imgOutput = _shouldBlurTransition ? WiderpaperProcessing.ApplyGradientBlurMirror(imgInput, _blurStrenght) : WiderpaperProcessing.ApplyBlurMirror(imgInput, _blurStrenght);
+                    await Task.Run(() => imgOutput = _shouldBlurTransition ? WiderpaperProcessing.ApplyGradientBlurMirror(imgInput, _blurStrenght) : WiderpaperProcessing.ApplyBlurMirror(imgInput, _blurStrenght));
                     break;
             }
         }
