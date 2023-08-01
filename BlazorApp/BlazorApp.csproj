@@ -57,8 +57,4 @@
       <ProjectReference Include="..\ImageProcessing\Widerpaper.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="wwwroot\tempUpload\" />
-    </ItemGroup>
-
 </Project>
