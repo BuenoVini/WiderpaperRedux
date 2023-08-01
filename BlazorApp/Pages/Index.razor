@@ -38,13 +38,13 @@
         <div class="alert alert-dark" role="alert">
             @switch (_algorithmChosen)
             {
-                case 0:
+                case Algorithm.SimpleMirror:
                     <p>This algorithm mirrors the left and right side of the image until it reaches the Ultrawide aspect ratio (21:9).</p>
                     <hr />
                     <p><strong>Use this when:</strong> you have an image with solid background color or repeating pattern.</p>
                     break;
 
-                case 1:
+                case Algorithm.BlurMirror:
                     <p>This algorithm mirrors the left and right side of the image until it reaches the Ultrawide aspect ratio (21:9). The mirrored area is then blurred with Gaussian Blur.</p>
                     <hr />
                     <label for="blurStrenght" class="form-label"><b>Blur Strenght:</b> @(_blurStrenght*2)%</label>
@@ -113,15 +113,20 @@
 </div>
 
 @code {
-    private int _algorithmChosen = 0;
+    private enum Algorithm {None = -1, SimpleMirror, BlurMirror}
+
+    private Algorithm _algorithmChosen = Algorithm.SimpleMirror;
     private int _blurStrenght = 25;
     private bool _shouldBlurTransition = false;
     private bool _isProcessingImage = false;
 
     private void ChangeAlgorithm(ChangeEventArgs e)
     {
-        if (!int.TryParse(e.Value.ToString(), out _algorithmChosen))
-            _algorithmChosen = -1;
+        int temp;
+        if (!int.TryParse(e.Value.ToString(), out temp))
+            temp = -1;
+
+        _algorithmChosen = (Algorithm)temp;
     }
 
     private void ChangeBlurStrenght(ChangeEventArgs e)
