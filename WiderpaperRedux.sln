@@ -7,7 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp\Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Widerpaper", "ImageProcessing\Widerpaper.csproj", "{7276F6EE-3E2D-49E2-80F2-E71861D2ED41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorApp", "BlazorApp\BlazorApp.csproj", "{C1D64728-87E4-4A5E-A9B9-8438A4EF7493}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp", "BlazorApp\BlazorApp.csproj", "{C1D64728-87E4-4A5E-A9B9-8438A4EF7493}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7276F6EE-3E2D-49E2-80F2-E71861D2ED41} = {7276F6EE-3E2D-49E2-80F2-E71861D2ED41}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
