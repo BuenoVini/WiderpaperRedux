@@ -75,6 +75,9 @@
                 Step 3: Generate Ultrawide image
             </label>
         </h4>
+        <div class="alert alert-dark text-center" role="alert">
+            Your images will be saved in <code>'MyPictures/Widerpaper'</code>
+        </div>
         <button @onclick="@ProcessImageAsync" id="buttonProcessImage" type="button" class="btn btn-primary" disabled="@_isProcessingImage">
             @if (!_isProcessingImage)
             {
