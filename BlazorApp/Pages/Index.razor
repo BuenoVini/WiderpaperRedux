@@ -116,16 +116,18 @@
 
 @code {
     private enum Algorithm { None = -1, SimpleMirror, BlurMirror }
-
     private Algorithm _algorithmChosen = Algorithm.SimpleMirror;
-    private string _filePath;
+
+    //private string _inputFilePath; /* BUG in MAUI Blazor App when using LocalApplicationData. See: https://github.com/dotnet/runtime/issues/74884 */
+    private string _inputFileName;
     private int _blurStrenght = 25;
+
     private bool _shouldBlurTransition = false;
     private bool _isProcessingImage = false;
 
-    private string GetWiderpaperFolderPath()
+    private string GetWiderpaperFolderPath(Environment.SpecialFolder specialFolder)
     {
-        string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Widerpaper\\";
+        string folderPath = Path.Combine(Environment.GetFolderPath(specialFolder), "Widerpaper");
 
         if (!Directory.Exists(folderPath))
             Directory.CreateDirectory(folderPath);
@@ -135,9 +137,11 @@
 
     private async Task OnSelectImageAsync(InputFileChangeEventArgs e)
     {
-        _filePath = GetWiderpaperFolderPath() + "in.jpg";
+        _inputFileName = e.File.Name;
+        string _inputFilePath;  // TODO: delete this line when BUG is fixed: https://github.com/dotnet/runtime/issues/74884
+        _inputFilePath = Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.LocalApplicationData), "temp.jpg");
 
-        await using FileStream stream = new(_filePath, FileMode.Create);
+        await using FileStream stream = new(_inputFilePath, FileMode.Create);
         await e.File.OpenReadStream(10 * 1024 * 1024).CopyToAsync(stream);
     }
 
@@ -166,7 +170,8 @@
     {
         _isProcessingImage = true;
 
-        using WiderpaperImage imgInput = new(_filePath);
+        string _inputFilePath = Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.LocalApplicationData), "temp.jpg");  // TODO: delete this line when BUG is fixed: https://github.com/dotnet/runtime/issues/74884
+        using WiderpaperImage imgInput = new(_inputFilePath);
         WiderpaperImage imgOutput;
 
         using (imgOutput = new())
@@ -183,7 +188,7 @@
             }
         }
 
-        //imgOutput.SaveImage(GetWiderpaperFolderPath() + "out.jpg");
+        imgOutput.SaveImage(Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures), "(21-9) " + _inputFileName));
 
         _isProcessingImage = false;
     }
