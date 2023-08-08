@@ -101,11 +101,19 @@
                 </div>
             </Body>
         </Toast>
+
+        <Toast @ref="_toastUnselectedFile" Title="No file selected" ToastValidation="Toast.Validation.Error">
+            <Body>
+                <p>Before you can begin processing, first you have to choose a target image.</p>
+                <p>Do so by following <strong>Step 1</strong>.</p>
+            </Body>
+        </Toast>
     </div>
 </div>
 
 @code {
     private Toast _toastFinishedProcessing;
+    private Toast _toastUnselectedFile;
 
     private enum Algorithm { None = -1, SimpleMirror, BlurMirror }
     private Algorithm _algorithmChosen = Algorithm.SimpleMirror;
@@ -160,6 +168,12 @@
 
     private async Task ProcessImageAsync()
     {
+        if (string.IsNullOrEmpty(_inputFileName))
+        {
+            await _toastUnselectedFile.ShowToastAsync();
+            return;
+        }
+
         _isProcessingImage = true;
 
         string _inputFilePath = Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.LocalApplicationData), "temp.jpg");  // TODO: delete this line when BUG is fixed: https://github.com/dotnet/runtime/issues/74884
