@@ -1,5 +1,6 @@
 ﻿@page "/"
 
+@using BlazorApp.Components
 @using Widerpaper
 
 <div class="container">
@@ -87,7 +88,7 @@
         </button>
     </div>
 
-    <hr />
+   @* <hr />
 
     <div class="row my-4">
         <h4>
@@ -111,10 +112,16 @@
                 </div>
             </div>
         </div>
+    </div>*@
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <Toast @ref="_toastFinishedProcessing" Title="Processing Finished" Body="Your Ultrawide image is ready!" />
     </div>
 </div>
 
 @code {
+    private Toast _toastFinishedProcessing;
+
     private enum Algorithm { None = -1, SimpleMirror, BlurMirror }
     private Algorithm _algorithmChosen = Algorithm.SimpleMirror;
 
@@ -191,6 +198,8 @@
         imgOutput.SaveImage(Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures), "(21-9) " + _inputFileName));
 
         _isProcessingImage = false;
+
+        await _toastFinishedProcessing.ShowToastAsync();
     }
 
     private async Task OpenWiderpaperImageFolderAsync() => await Launcher.Default.OpenAsync(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures));

@@ -1,0 +1,21 @@
+﻿@inject IJSRuntime JsRuntime;
+
+<div id="liveToast" @ref="toastRef" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+        <strong class="me-auto">@Title</strong>
+        <small>just now</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+        @Body
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public string Title { get; set; }
+    [Parameter, EditorRequired] public string Body { get; set; }
+
+    private ElementReference toastRef;
+
+    public async Task ShowToastAsync() => await JsRuntime.InvokeVoidAsync("ShowToastJS", toastRef);
+}
