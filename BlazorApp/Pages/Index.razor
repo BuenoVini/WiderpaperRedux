@@ -103,7 +103,7 @@
 
                 <div class="row my-2">
                     <div class="col d-grid gap-2">
-                        <button type="button" class="btn btn-outline-primary">Preview</button>
+                        <button @onclick="OpenWiderpaperImageFolderAsync" type="button" class="btn btn-outline-primary">Preview</button>
                     </div>
                     <div class="col d-grid gap-2">
                         <button type="button" class="btn btn-primary">Save</button>
@@ -192,4 +192,6 @@
 
         _isProcessingImage = false;
     }
+
+    private async Task OpenWiderpaperImageFolderAsync() => await Launcher.Default.OpenAsync(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures));
 }
