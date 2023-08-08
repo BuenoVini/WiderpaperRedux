@@ -6,11 +6,23 @@ public class WiderpaperImage : IDisposable
 {
     internal Image<TPixel>? _image;
 
-    public WiderpaperImage(string path) => _image = Image.Load<TPixel>(path);
+    public WiderpaperImage(string path) => _image = Load(path);
     public WiderpaperImage() => _image = null;
     internal WiderpaperImage(Image<TPixel> img) => _image = img;
 
-    public static WiderpaperImage LoadImage(string path) => new (Image.Load<TPixel>(path));
+    private Image<TPixel> Load(string path)
+    {
+        try
+        {
+            return Image.Load<TPixel>(path);
+        }
+        catch (UnknownImageFormatException e)
+        {
+            throw new WiderpaperException(e.Message);
+        }
+    }
+
+    public WiderpaperImage LoadImage(string path) => new(Load(path));
     public void SaveImage(string path) => _image?.Save(path);
 
     public void Dispose() => _image?.Dispose();

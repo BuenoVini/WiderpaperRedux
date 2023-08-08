@@ -23,7 +23,7 @@
                 Step 1: Choose an image
             </label>
         </h4>
-        <InputFile OnChange="OnSelectImageAsync" class="form-control" id="inputImage" disabled="@_isProcessingImage" />
+        <InputFile OnChange="OnSelectImageAsync" class="form-control" id="inputImage" disabled="@_isProcessingImage" accept=".jpg, .png" />
     </div>
 
     <hr />
@@ -108,12 +108,28 @@
                 Do so by following <strong>Step 1</strong>.
             </Body>
         </Toast>
+
+        <Toast @ref="_toastUnsupportedFile" Title="Unsupported file" ToastValidation="Toast.Validation.Error">
+            <Body>
+                <p>The file chosen is not a valid format.</p>
+                Please, select another image.
+            </Body>
+        </Toast>
+
+        <Toast @ref="_toastFileTooLarge" Title="File is too large" ToastValidation="Toast.Validation.Error">
+            <Body>
+                <p>The file chosen exceeds the maximum allowed size.</p>
+                Please, select an image up to 10MB.
+            </Body>
+        </Toast>
     </div>
 </div>
 
 @code {
     private Toast _toastFinishedProcessing;
     private Toast _toastUnselectedFile;
+    private Toast _toastUnsupportedFile;
+    private Toast _toastFileTooLarge;
 
     private enum Algorithm { None = -1, SimpleMirror, BlurMirror }
     private Algorithm _algorithmChosen = Algorithm.SimpleMirror;
@@ -137,12 +153,17 @@
 
     private async Task OnSelectImageAsync(InputFileChangeEventArgs e)
     {
+        const int MAX_FILE_SIZE = 10 * 1024 * 1024;
+        if (e.File.Size > MAX_FILE_SIZE)
+            await _toastFileTooLarge.ShowToastAsync();
+
         _inputFileName = e.File.Name;
+
         string _inputFilePath;  // TODO: delete this line when BUG is fixed: https://github.com/dotnet/runtime/issues/74884
         _inputFilePath = Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.LocalApplicationData), "temp.jpg");
 
         await using FileStream stream = new(_inputFilePath, FileMode.Create);
-        await e.File.OpenReadStream(10 * 1024 * 1024).CopyToAsync(stream);
+        await e.File.OpenReadStream(MAX_FILE_SIZE).CopyToAsync(stream);
     }
 
     private void OnChangeAlgorithm(ChangeEventArgs e)
@@ -177,28 +198,35 @@
         _isProcessingImage = true;
 
         string _inputFilePath = Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.LocalApplicationData), "temp.jpg");  // TODO: delete this line when BUG is fixed: https://github.com/dotnet/runtime/issues/74884
-        using WiderpaperImage imgInput = new(_inputFilePath);
-        WiderpaperImage imgOutput;
-
-        using (imgOutput = new())
+        try
         {
-            switch (_algorithmChosen)
-            {
-                case Algorithm.SimpleMirror:
-                    imgOutput = WiderpaperProcessing.ApplyMirror(imgInput);
-                    break;
+            using WiderpaperImage imgInput = new(_inputFilePath);
+            WiderpaperImage imgOutput;
 
-                case Algorithm.BlurMirror:
-                    await Task.Run(() => imgOutput = _shouldBlurTransition ? WiderpaperProcessing.ApplyGradientBlurMirror(imgInput, _blurStrenght) : WiderpaperProcessing.ApplyBlurMirror(imgInput, _blurStrenght));
-                    break;
+            using (imgOutput = new())
+            {
+                switch (_algorithmChosen)
+                {
+                    case Algorithm.SimpleMirror:
+                        imgOutput = WiderpaperProcessing.ApplyMirror(imgInput);
+                        break;
+
+                    case Algorithm.BlurMirror:
+                        await Task.Run(() => imgOutput = _shouldBlurTransition ? WiderpaperProcessing.ApplyGradientBlurMirror(imgInput, _blurStrenght) : WiderpaperProcessing.ApplyBlurMirror(imgInput, _blurStrenght));
+                        break;
+                }
             }
+
+            imgOutput.SaveImage(Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures), "(21-9) " + _inputFileName));
+
+            await _toastFinishedProcessing.ShowToastAsync();
+        }
+        catch (WiderpaperException)
+        {
+            await _toastUnsupportedFile.ShowToastAsync();
         }
 
-        imgOutput.SaveImage(Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures), "(21-9) " + _inputFileName));
-
         _isProcessingImage = false;
-
-        await _toastFinishedProcessing.ShowToastAsync();
     }
 
     private async Task OpenWiderpaperImageFolderAsync() => await Launcher.Default.OpenAsync(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures));
