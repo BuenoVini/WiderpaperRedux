@@ -88,34 +88,19 @@
         </button>
     </div>
 
-   @* <hr />
-
-    <div class="row my-4">
-        <h4>
-            <label for="saveImage" class="form-label">
-                Step 4: Save your image
-            </label>
-        </h4>
-        <div id="saveImage" class="py-0 px-4 alert alert-light d-flex align-items-center position-relative" role="alert">
-            <div class="col">
-                <div class="row my-2">
-                    <strong class="text-center">Your Ultrawide image is ready!</strong>
-                </div>
-
-                <div class="row my-2">
-                    <div class="col d-grid gap-2">
-                        <button @onclick="OpenWiderpaperImageFolderAsync" type="button" class="btn btn-outline-primary">Preview</button>
-                    </div>
-                    <div class="col d-grid gap-2">
-                        <button type="button" class="btn btn-primary">Save</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>*@
-
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <Toast @ref="_toastFinishedProcessing" Title="Processing Finished" Body="Your Ultrawide image is ready!" />
+        <Toast @ref="_toastFinishedProcessing" Title="Your Ultrawide image has been saved!" ToastValidation="Toast.Validation.Success">
+            <Body>
+                <div class="row">
+                    <div class="col-6 d-grid gap-2">
+                        <button @onclick="OpenProcessedImageAsync" type="button" class="btn btn-outline-success btn-sm">Preview</button>
+                    </div>
+                    <div class="col-6 d-grid gap-2">
+                        <button @onclick="OpenWiderpaperImageFolderAsync" type="button" class="btn btn-outline-success btn-sm">Open folder</button>
+                    </div>
+                </div>
+            </Body>
+        </Toast>
     </div>
 </div>
 
@@ -203,4 +188,6 @@
     }
 
     private async Task OpenWiderpaperImageFolderAsync() => await Launcher.Default.OpenAsync(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures));
+
+    private async Task OpenProcessedImageAsync() => await Launcher.Default.OpenAsync(Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures), "(21-9) " + _inputFileName));
 }

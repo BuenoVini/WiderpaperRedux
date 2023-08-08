@@ -1,9 +1,22 @@
 ﻿@inject IJSRuntime JsRuntime;
 
-<div id="liveToast" @ref="toastRef" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+<div id="liveToast" @ref="toastRef" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
     <div class="toast-header">
+        @switch (ToastValidation)
+        {
+            case Validation.Success:
+                <i class="bi bi-check-circle-fill me-2 text-success" style="font-size: 1.3em;"></i>
+                break;
+
+            case Validation.Warning:
+                <i class="bi bi-check-circle-fill me-2 text-warning" style="font-size: 1.3em;"></i>
+                break;
+
+            case Validation.Error:
+                <i class="bi bi-file-earmark-x-fill me-2 text-danger" style="font-size: 1.3em;"></i>
+                break;
+        }
         <strong class="me-auto">@Title</strong>
-        <small>just now</small>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
     <div class="toast-body">
@@ -12,8 +25,11 @@
 </div>
 
 @code {
+    public enum Validation { Success, Warning, Error }
+
     [Parameter, EditorRequired] public string Title { get; set; }
-    [Parameter, EditorRequired] public string Body { get; set; }
+    [Parameter] public Validation ToastValidation { get; set; }
+    [Parameter] public RenderFragment Body { get; set; }
 
     private ElementReference toastRef;
 
