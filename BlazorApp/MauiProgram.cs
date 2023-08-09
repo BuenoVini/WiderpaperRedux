@@ -1,5 +1,4 @@
-﻿using BlazorApp.Data;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
 namespace BlazorApp
 {
@@ -21,8 +20,6 @@ namespace BlazorApp
 		    builder.Services.AddBlazorWebViewDeveloperTools();
 		    builder.Logging.AddDebug();
         #endif
-
-            builder.Services.AddSingleton<WeatherForecastService>();
 
             return builder.Build();
         }
