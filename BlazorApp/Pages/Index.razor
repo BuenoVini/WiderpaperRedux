@@ -4,8 +4,10 @@
 @using Widerpaper
 
 <div class="container">
+    @* -- TOP HEADER -- *@
     <div>
         <h1 style="font-size: 41px;" class="text-center"><strong>Widerpaper</strong> <span style="font-weight: lighter">Redux</span></h1>
+
         <p class="text-center">
             <small>
                 Made with ❤️ by
@@ -16,47 +18,62 @@
             </small>
         </p>
     </div>
+    @* -- TOP HEADER -- *@
 
+
+    @* -- STEP 1 -- *@
     <div class="row my-4">
         <h4>
             <label for="inputImage" class="form-label">
                 Step 1: Choose an image
             </label>
         </h4>
+
         <InputFile OnChange="OnSelectImageAsync" class="form-control" id="inputImage" disabled="@_isProcessingImage" accept=".jpg, .png" />
     </div>
+    @* -- STEP 1 -- *@
 
     <hr />
 
+    @* -- STEP 2 -- *@
     <div class="row my-4">
         <h4>
             <label for="selectAlgorithm" class="form-label">
                 Step 2: Choose an algorithm
             </label>
         </h4>
+
         <select id="selectAlgorithm" @onchange="OnChangeAlgorithm" class="form-select" aria-label="Select an algorithm" disabled="@_isProcessingImage">
             <option selected value="0">Simple Mirror</option>
             <option value="1">Mirror with Blur</option>
         </select>
+
         <div class="alert alert-dark" role="alert">
             @switch (_algorithmChosen)
             {
                 case Algorithm.SimpleMirror:
                     <p>This algorithm mirrors the left and right side of the image until it reaches the Ultrawide aspect ratio (21:9).</p>
+                    
                     <hr />
+                   
                     <p><strong>Use this when:</strong> you have an image with solid background color or repeating pattern.</p>
                     break;
 
                 case Algorithm.BlurMirror:
                     <p>This algorithm mirrors the left and right side of the image until it reaches the Ultrawide aspect ratio (21:9). The mirrored area is then blurred with Gaussian Blur.</p>
+                    
                     <hr />
+                    
                     <label for="blurStrenght" class="form-label"><b>Blur Strenght:</b> @(_blurStrenght * 2)%</label>
                     <input @oninput="OnChangeBlurStrenght" type="range" class="form-range" id="blurStrenght" value=@_blurStrenght min="5" max="50" step="5" disabled="@_isProcessingImage">
+                    
                     <div class="form-check form-switch mt-3">
                         <input @onchange="OnChangeBlurTransition" checked="@_shouldBlurTransition" class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheck" disabled="@_isProcessingImage">
                         <label class="form-check-label" for="flexSwitchCheck">Apply blur transition?</label>
                     </div>
+                    
                     <hr />
+                    
                     <p><strong>Use this when:</strong> the image background is not even or you start seeing too many repeating pattern from the Simple Mirror algorithm.</p>
                     break;
 
@@ -66,18 +83,22 @@
             }
         </div>
     </div>
+    @* -- STEP 2 -- *@
 
     <hr />
 
+    @* -- STEP 3 -- *@
     <div class="row my-4">
         <h4>
             <label for="buttonProcessImage" class="form-label">
                 Step 3: Generate Ultrawide image
             </label>
         </h4>
+        
         <div class="alert alert-dark text-center" role="alert">
             Your images will be saved in <code>'MyPictures/Widerpaper'</code>
         </div>
+        
         <button @onclick="@ProcessImageAsync" id="buttonProcessImage" type="button" class="btn btn-primary" disabled="@_isProcessingImage">
             @if (!_isProcessingImage)
             {
@@ -90,7 +111,10 @@
             }
         </button>
     </div>
+    @* -- STEP 3 -- *@
 
+
+    @* -- TOASTERS -- *@
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
         <Toast @ref="_toastFinishedProcessing" Title="Your Ultrawide image has been saved!" ToastValidation="Toast.Validation.Success">
             <Body>
@@ -98,6 +122,7 @@
                     <div class="col-6 d-grid gap-2">
                         <button @onclick="OpenProcessedImageAsync" type="button" class="btn btn-outline-success btn-sm">Preview</button>
                     </div>
+                    
                     <div class="col-6 d-grid gap-2">
                         <button @onclick="OpenWiderpaperImageFolderAsync" type="button" class="btn btn-outline-success btn-sm">Open folder</button>
                     </div>
@@ -126,9 +151,12 @@
             </Body>
         </Toast>
     </div>
+    @* -- TOASTERS -- *@
+
 </div>
 
 @code {
+    #region Private Fields
     private Toast _toastFinishedProcessing;
     private Toast _toastUnselectedFile;
     private Toast _toastUnsupportedFile;
@@ -143,7 +171,10 @@
 
     private bool _shouldBlurTransition = true;
     private bool _isProcessingImage = false;
+    #endregion
 
+
+    #region Util Methods
     private string GetWiderpaperFolderPath(Environment.SpecialFolder specialFolder)
     {
         string folderPath = Path.Combine(Environment.GetFolderPath(specialFolder), "Widerpaper");
@@ -153,7 +184,10 @@
 
         return folderPath;
     }
+    #endregion
 
+
+    #region On Tag Change
     private async Task OnSelectImageAsync(InputFileChangeEventArgs e)
     {
         const int MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -189,6 +223,13 @@
         if (!bool.TryParse(e.Value.ToString(), out _shouldBlurTransition))
             _shouldBlurTransition = false;
     }
+    #endregion
+
+
+    #region Buttons Action
+    private async Task OpenWiderpaperImageFolderAsync() => await Launcher.Default.OpenAsync(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures));
+
+    private async Task OpenProcessedImageAsync() => await Launcher.Default.OpenAsync(Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures), "(21-9) " + _inputFileName));
 
     private async Task ProcessImageAsync()
     {
@@ -231,8 +272,5 @@
 
         _isProcessingImage = false;
     }
-
-    private async Task OpenWiderpaperImageFolderAsync() => await Launcher.Default.OpenAsync(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures));
-
-    private async Task OpenProcessedImageAsync() => await Launcher.Default.OpenAsync(Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures), "(21-9) " + _inputFileName));
+    #endregion
 }
