@@ -1,6 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.Diagnostics;
+using SixLabors.ImageSharp;
 using Widerpaper;
 
 #region Selecting Image
@@ -18,29 +18,28 @@ string fileChosen = files[int.Parse(Console.ReadLine())];
 Console.Clear();
 
 #region Selecting Resize Algorithm
+using WiderpaperImage imgInput = new (fileChosen);
+WiderpaperImage imgOutput;
 
-WiderpaperManager.LoadImage(fileChosen);
-
-Console.WriteLine("[0] Apply Mirror\n[1] Apply Mean Blur");
+Console.WriteLine("[0] Apply Mirror\n[1] Apply Blur\n[2] Apply Mirror with Blur\n[3] Apply Mirror with Gradient Blur");
 
 Console.Write("\nSelect algorithm: ");
 int algorithmChosen = int.Parse(Console.ReadLine());
 
 Console.WriteLine("\nProcessing...");
 
-Stopwatch stopwatch = new();
-switch (algorithmChosen)
+using (imgOutput = new())
 {
-    case 0: WiderpaperManager.ApplyMirror(); break;
-    case 1: 
-        stopwatch.Start();
-        WiderpaperManager.ApplyMeanBlur(kernelSize: 15);
-        stopwatch.Stop();
-        break;
+    imgOutput = algorithmChosen switch
+    {
+        0 => WiderpaperProcessing.ApplyMirror(imgInput),
+        1 => WiderpaperProcessing.ApplyGaussianBlur(imgInput),
+        2 => WiderpaperProcessing.ApplyBlurMirror(imgInput, 50),
+        3 => WiderpaperProcessing.ApplyGradientBlurMirror(imgInput, 50),
+        _ => WiderpaperImage.LoadImage(""),
+    };
 }
 
-Console.WriteLine(stopwatch.ElapsedMilliseconds / 1000 + "s");
-
-WiderpaperManager.SaveImage(IMAGE_DIR_PATH + "output.jpg");
+imgOutput.SaveImage(IMAGE_DIR_PATH + "output.jpg");
 Console.WriteLine("Image successfully resized!");
 #endregion

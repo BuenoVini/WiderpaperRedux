@@ -7,6 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp\Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Widerpaper", "ImageProcessing\Widerpaper.csproj", "{7276F6EE-3E2D-49E2-80F2-E71861D2ED41}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp", "BlazorApp\BlazorApp.csproj", "{C1D64728-87E4-4A5E-A9B9-8438A4EF7493}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7276F6EE-3E2D-49E2-80F2-E71861D2ED41} = {7276F6EE-3E2D-49E2-80F2-E71861D2ED41}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +26,12 @@ Global
 		{7276F6EE-3E2D-49E2-80F2-E71861D2ED41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7276F6EE-3E2D-49E2-80F2-E71861D2ED41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7276F6EE-3E2D-49E2-80F2-E71861D2ED41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1D64728-87E4-4A5E-A9B9-8438A4EF7493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1D64728-87E4-4A5E-A9B9-8438A4EF7493}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1D64728-87E4-4A5E-A9B9-8438A4EF7493}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C1D64728-87E4-4A5E-A9B9-8438A4EF7493}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1D64728-87E4-4A5E-A9B9-8438A4EF7493}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1D64728-87E4-4A5E-A9B9-8438A4EF7493}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
