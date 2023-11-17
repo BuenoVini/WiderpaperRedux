@@ -1,6 +1,6 @@
 ﻿@inject IJSRuntime JsRuntime;
 
-<div id="liveToast" @ref="toastRef" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+<div id="liveToast" @ref="toastRef" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
     <div class="toast-header">
         @switch (ToastValidation)
         {
