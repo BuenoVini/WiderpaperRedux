@@ -27,8 +27,8 @@
 [![MIT License][license-shield]][license-url] -->
 
 <p align="center">
-  <a href="https://github.com/BuenoVini/WiderpaperRedux/releases/tag/v1.0-beta.1">
-    <img src="https://img.shields.io/badge/current_version-1.0--beta.2-blue?style=for-the-badge" alt="Current Version">
+  <a href="https://github.com/BuenoVini/WiderpaperRedux/releases/tag/v1.0.0">
+    <img src="https://img.shields.io/badge/current_version-1.0.0-blue?style=for-the-badge" alt="Current Version">
   </a>
   <a href="">
     <img src="https://img.shields.io/badge/license-none_yet-blue?style=for-the-badge" alt="License">
