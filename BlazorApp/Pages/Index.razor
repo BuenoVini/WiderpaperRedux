@@ -167,6 +167,7 @@
 
     //private string _inputFilePath; /* BUG in MAUI Blazor App when using LocalApplicationData. See: https://github.com/dotnet/runtime/issues/74884 */
     private string _inputFileName;
+    private string _previousOuputFileName;
     private int _blurStrenght = 25;
 
     private bool _shouldBlurTransition = true;
@@ -183,6 +184,13 @@
             Directory.CreateDirectory(folderPath);
 
         return folderPath;
+    }
+
+    private void SaveImage(WiderpaperImage img)
+    {
+        _previousOuputFileName = Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures), $"{(new DateTimeOffset(DateTime.UtcNow)).ToUnixTimeMilliseconds()}.jpg");
+
+        img.SaveImage(_previousOuputFileName);
     }
     #endregion
 
@@ -229,7 +237,7 @@
     #region Buttons Action
     private async Task OpenWiderpaperImageFolderAsync() => await Launcher.Default.OpenAsync(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures));
 
-    private async Task OpenProcessedImageAsync() => await Launcher.Default.OpenAsync(Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures), "(21-9) " + _inputFileName));
+    private async Task OpenProcessedImageAsync() => await Launcher.Default.OpenAsync(_previousOuputFileName);
 
     private async Task ProcessImageAsync()
     {
@@ -261,7 +269,7 @@
                 }
             }
 
-            imgOutput.SaveImage(Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures), "(21-9) " + _inputFileName));
+            SaveImage(imgOutput);
 
             await _toastFinishedProcessing.ShowToastAsync();
         }
