@@ -43,14 +43,12 @@ public static class WiderpaperProcessing
                 srcRow.CopyTo(destRow[qtyPixelsToCopy..^qtyPixelsToCopy]);
 
                 /* Copying the left side of Source Image reversed to Destination Image */
-                Span<TPixel> leftSpan = srcRow[..qtyPixelsToCopy];
-                leftSpan.Reverse();
-                leftSpan.CopyTo(destRow[..qtyPixelsToCopy]);
+                srcRow[..qtyPixelsToCopy].CopyTo(destRow[..qtyPixelsToCopy]);
+                destRow[..qtyPixelsToCopy].Reverse();
 
-                /* Copying the right side of Source Image reversed to Destination Image */
-                Span<TPixel> rightSpan = srcRow[^(qtyPixelsToCopy + 1)..];
-                rightSpan.Reverse();
-                rightSpan.CopyTo(destRow[^(qtyPixelsToCopy + 1)..]);
+                ///* Copying the right side of Source Image reversed to Destination Image */
+                srcRow[^(qtyPixelsToCopy + 1)..].CopyTo(destRow[^(qtyPixelsToCopy + 1)..]);
+                destRow[^(qtyPixelsToCopy + 1)..].Reverse();
             }
         });
 
