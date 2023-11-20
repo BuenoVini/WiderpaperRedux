@@ -14,9 +14,10 @@
         {
             X = 100,
             Y = 100,
-            MinimumWidth = 450,
-            MinimumHeight = 850,
-            MaximumWidth = 450,
+            MinimumWidth = 1000,
+            MaximumWidth = 1000,
+            MinimumHeight = 700,
+            MaximumHeight = 700,
             Title = "Widerpaper Redux"
         };
     }
