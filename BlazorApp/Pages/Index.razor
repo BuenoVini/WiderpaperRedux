@@ -1,10 +1,72 @@
 ﻿@page "/"
 
+@inject IJSRuntime JsRuntime;
+
 <div class="container px-0 m-0" >
 	<div class="row p-0" style="height:92vh; width: 96vw">
-		<div class="col-4" style="background-color:hotpink">
-			PINK
+		<div class="col-4"> <!-- style="background-color:hotpink"> -->
+
+			<!--MIRROR ALGORITHM BLOCK-->
+			<div class="alert alert-secondary" role="alert">
+				<!--BLOCK TITLE-->
+				<h5 class="mb-4">
+					Mirror Algorithm
+					<i class="bi bi-info-circle-fill" style="font-size: 0.9rem"></i>
+				</h5>
+				
+				<!--BUTTONS-->
+				<div class="row">
+					<div class="col-6 pe-2">
+						<div class="d-grid">
+							<button type="button" class="btn btn-primary">Simple</button>
+						</div>
+					</div>
+					<div class="col-6 ps-2">
+						<div class="d-grid">
+							<button type="button" class="btn btn-secondary">Blurred</button>
+						</div>
+					</div>
+				</div>
+
+				<!--BLUR OPTIONS-->
+				@if (true)
+				{
+					<div class="mt-4 mb-2">
+						<div class="row">
+							<div class="col">
+								<label for="blurStrenght" class="form-label m-0">
+									Blur Strenght:
+								</label>
+							</div>
+							<div class="col">
+								<div class="text-end">
+									50%
+								</div>
+							</div>
+						</div>
+						<input id="blurStrenght" disabled="@true" type="range" class="form-range" />
+					</div>
+
+					<div class="form-check form-switch">
+						<input checked="@true" disabled="@true" class="form-check-input" type="checkbox" role="switch" id="flexSwitch">
+						<label class="form-check-label" for="flexSwitch">Apply blur transition?</label>
+					</div>
+				}
+			</div>
+
+			<div class="alert alert-light" role="alert">
+				A simple light alert—check it out!
+			</div>
+
+			<div class="alert alert-light" role="alert">
+				A simple light alert—check it out!
+			</div>
+
+			<div class="d-grid">
+				<button type="button" class="btn btn-primary">Convert to Ultrawide!</button>
+			</div>
 		</div>
+
 		<div class="col" style="background-color:greenyellow">GREEN</div>
 	</div>
 </div>
