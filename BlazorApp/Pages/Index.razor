@@ -1,6 +1,6 @@
 ﻿@page "/"
 
-@inject IJSRuntime JsRuntime;
+@using BlazorApp.Components
 
 <div class="container px-0 m-0" >
 	<div class="row p-0" style="height:92vh; width: 96vw">
@@ -11,19 +11,25 @@
 				<!--BLOCK TITLE-->
 				<h5 class="mb-4">
 					Mirror Algorithm
-					<i class="bi bi-info-circle-fill" style="font-size: 0.9rem"></i>
+					<InfoTooltip Message="Mirror the left and right side of the image until it reaches the Ultrawide aspect ratio." />
 				</h5>
 				
 				<!--BUTTONS-->
 				<div class="row">
 					<div class="col-6 pe-2">
 						<div class="d-grid">
-							<button type="button" class="btn btn-primary">Simple</button>
+							<button type="button" class="btn btn-primary">
+								Simple
+								<InfoTooltip Message="Use this when you have an image with solid background color or repeating pattern." />
+							</button>
 						</div>
 					</div>
 					<div class="col-6 ps-2">
 						<div class="d-grid">
-							<button type="button" class="btn btn-secondary">Blurred</button>
+							<button type="button" class="btn btn-secondary">
+								Blurred
+								<InfoTooltip Message="Use this when the Simple algorithm yields too many repeating pattern." />
+							</button>
 						</div>
 					</div>
 				</div>
@@ -35,7 +41,8 @@
 						<div class="row">
 							<div class="col">
 								<label for="blurStrenght" class="form-label m-0">
-									Blur Strenght:
+									Blur Strenght
+									<InfoTooltip Message="Change the Gaussian Blur strenght." />
 								</label>
 							</div>
 							<div class="col">
@@ -49,7 +56,10 @@
 
 					<div class="form-check form-switch">
 						<input checked="@true" disabled="@true" class="form-check-input" type="checkbox" role="switch" id="flexSwitch">
-						<label class="form-check-label" for="flexSwitch">Apply blur transition?</label>
+						<label class="form-check-label" for="flexSwitch">
+							Apply blur transition?
+							<InfoTooltip Message="Create a gradient transition from the blurred expanded area to the center of the image." />
+						</label>
 					</div>
 				}
 			</div>

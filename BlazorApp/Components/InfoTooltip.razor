@@ -1,0 +1,19 @@
+﻿@inject IJSRuntime JsRuntime
+
+<i class="bi bi-info-circle-fill ms-1" style="font-size: 0.9rem"
+   data-bs-toggle="tooltip" data-bs-placement="right"
+   data-bs-custom-class="custom-tooltip"
+   data-bs-title=@Message
+   @ref="TooltipRef"></i>
+
+@code {
+	[Parameter, EditorRequired] public string Message { get; set; }
+
+	public ElementReference TooltipRef { get; private set; }
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+			await JsRuntime.InvokeVoidAsync("ShowTooltipJS", TooltipRef);
+	}
+}
