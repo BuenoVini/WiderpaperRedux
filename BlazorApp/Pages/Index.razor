@@ -41,11 +41,11 @@
 							</div>
 							<div class="col">
 								<div class="text-end">
-									50%
+									@(_blurStrenght * 2)%
 								</div>
 							</div>
 						</div>
-						<input id="blurStrenght" disabled="@false" type="range" class="form-range" />
+						<input @oninput="OnInputBlurStrenght" id="blurStrenght" type="range" class="form-range" min="5" max="50" step="5" value="@_blurStrenght" />
 					</div>
 
 					<div class="form-check form-switch">

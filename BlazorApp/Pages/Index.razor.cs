@@ -74,6 +74,13 @@ public partial class Index
 	private void OnClickFormatPngBtn() => _formatChosen = Format.Png;
 	#endregion
 
+	#region On Input Handlers
+	private void OnInputBlurStrenght(ChangeEventArgs e)
+	{
+		if (!int.TryParse(e.Value.ToString(), out _blurStrenght))
+			_blurStrenght = 5;
+	}
+	#endregion
 
 	#region On Tag Change
 	private async Task OnSelectImageAsync(InputFileChangeEventArgs e)
@@ -98,12 +105,6 @@ public partial class Index
             temp = -1;
 
         _algorithmChosen = (Algorithm)temp;
-    }
-
-    private void OnChangeBlurStrenght(ChangeEventArgs e)
-    {
-        if (!int.TryParse(e.Value.ToString(), out _blurStrenght))
-            _blurStrenght = 5;
     }
 
     private void OnChangeBlurTransition(ChangeEventArgs e)
