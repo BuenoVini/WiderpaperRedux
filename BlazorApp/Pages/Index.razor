@@ -90,7 +90,19 @@
 				</div>
 			</div>
 
-			<div class="d-grid">
+			<!--OUTPUT FOLDER LINK-->
+			<div class="alert alert-light text-center" role="alert">
+				Your images will be saved in 
+				<code>
+					<a href="#" @onclick="OnClickOpenOutputFolderAsync" class="link-primary link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover">
+						'MyPictures/Widerpaper'
+						<i class="bi bi-box-arrow-up-right" style="font-size: 1rem"></i>
+					</a>
+				</code>
+			</div>
+
+			<!--CONVERT BUTTON-->
+			<div class="d-grid mb-4">
 				<button type="button" class="btn btn-primary">Convert to Ultrawide!</button>
 			</div>
 		</div>

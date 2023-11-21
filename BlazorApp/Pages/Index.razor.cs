@@ -72,6 +72,8 @@ public partial class Index
 	private void OnClickFormatOriginalBtn() => _formatChosen = Format.Original;
 	private void OnClickFormatJpegBtn() => _formatChosen = Format.Jpeg;
 	private void OnClickFormatPngBtn() => _formatChosen = Format.Png;
+
+    private async Task OnClickOpenOutputFolderAsync() => await Launcher.Default.OpenAsync(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures));
 	#endregion
 
 	#region On Input Handlers
@@ -82,7 +84,7 @@ public partial class Index
 	}
 	#endregion
 
-	#region On Tag Change
+	#region On Change Handlers
 	private async Task OnSelectImageAsync(InputFileChangeEventArgs e)
     {
         const int MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -98,15 +100,6 @@ public partial class Index
         await e.File.OpenReadStream(MAX_FILE_SIZE).CopyToAsync(stream);
     }
 
-    private void OnChangeAlgorithm(ChangeEventArgs e)
-    {
-        int temp;
-        if (!int.TryParse(e.Value.ToString(), out temp))
-            temp = -1;
-
-        _algorithmChosen = (Algorithm)temp;
-    }
-
     private void OnChangeBlurTransition(ChangeEventArgs e)
     {
         if (!bool.TryParse(e.Value.ToString(), out _shouldBlurTransition))
@@ -116,8 +109,6 @@ public partial class Index
 
 
     #region Buttons Action
-    private async Task OpenWiderpaperImageFolderAsync() => await Launcher.Default.OpenAsync(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures));
-
     private async Task OpenProcessedImageAsync() => await Launcher.Default.OpenAsync(_previousOuputFileName);
 
     private async Task ProcessImageAsync()
