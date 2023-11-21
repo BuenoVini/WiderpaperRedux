@@ -16,12 +16,12 @@
 				
 				<!--BUTTONS-->
 				<div class="d-flex gap-2">
-					<button type="button" class="btn btn-primary w-100">
+					<button @onclick="OnClickSimpleMirrorBtn" type="button" class=@SetAlgorithmButtonsState("btn btn-? w-100", Algorithm.SimpleMirror))>
 						Simple
 						<InfoTooltip Message="Use this when you have an image with solid background color or repeating pattern." />
 					</button>
 
-					<button type="button" class="btn btn-secondary w-100">
+					<button @onclick="OnClickBlurMirrorBtn" type="button" class=@SetAlgorithmButtonsState("btn btn-? w-100", Algorithm.BlurMirror))>
 						Blurred
 						<InfoTooltip Message="Use this when the Simple algorithm yields too many repeating pattern." />
 					</button>
@@ -29,7 +29,7 @@
 
 
 				<!--BLUR OPTIONS-->
-				@if (true)
+				@if (_algorithmChosen == Algorithm.BlurMirror)
 				{
 					<div class="mt-4 mb-2">
 						<div class="row">
@@ -45,11 +45,11 @@
 								</div>
 							</div>
 						</div>
-						<input id="blurStrenght" disabled="@true" type="range" class="form-range" />
+						<input id="blurStrenght" disabled="@false" type="range" class="form-range" />
 					</div>
 
 					<div class="form-check form-switch">
-						<input checked="@true" disabled="@true" class="form-check-input" type="checkbox" role="switch" id="flexSwitch">
+						<input checked="@true" disabled="@false" class="form-check-input" type="checkbox" role="switch" id="flexSwitch">
 						<label class="form-check-label" for="flexSwitch">
 							Apply blur transition?
 							<InfoTooltip Message="Create a gradient transition from the blurred expanded area to the center of the image." />
@@ -68,9 +68,9 @@
 
 				<!--BUTTONS-->
 				<div class="btn-group d-flex" role="group" aria-label="Basic example">
-					<button type="button" class="btn btn-primary flex-fill">Original</button>
-					<button type="button" class="btn btn-secondary flex-fill">2x</button>
-					<button type="button" class="btn btn-secondary flex-fill">4x</button>
+					<button @onclick="OnClickUpscalingOriginalBtn" type="button" class=@SetUpscalingButtonsState("btn btn-? flex-fill", Upscaling.Original)>Original</button>
+					<button @onclick="OnClickUpscalingTwoTimesBtn" type="button" class=@SetUpscalingButtonsState("btn btn-? flex-fill", Upscaling.TwoTimes)>2x</button>
+					<button @onclick="OnClickUpscalingFourTimesBtn" type="button" class=@SetUpscalingButtonsState("btn btn-? flex-fill", Upscaling.FourTimes)>4x</button>
 				</div>
 			</div>
 
@@ -78,15 +78,15 @@
 			<div class="alert alert-dark" role="alert">
 				<!--BLOCK TITLE-->
 				<h5 class="mb-4">
-					Ouput format
+					Output format
 					<InfoTooltip Message="Decide whether to save the output image with the same format or choose your own." />
 				</h5>
 
 				<!--BUTTONS-->
 				<div class="btn-group d-flex" role="group" aria-label="Basic example">
-					<button type="button" class="btn btn-primary flex-fill">Original</button>
-					<button type="button" class="btn btn-secondary flex-fill">JPEG</button>
-					<button type="button" class="btn btn-secondary flex-fill">PNG</button>
+					<button @onclick="OnClickFormatOriginalBtn" type="button" class=@SetFormatButtonsState("btn btn-? flex-fill", Format.Original)>Original</button>
+					<button @onclick="OnClickFormatJpegBtn" type="button" class="@SetFormatButtonsState("btn btn-? flex-fill", Format.Jpeg)">JPEG</button>
+					<button @onclick="OnClickFormatPngBtn" type="button" class="@SetFormatButtonsState("btn btn-? flex-fill", Format.Png)">PNG</button>
 				</div>
 			</div>
 

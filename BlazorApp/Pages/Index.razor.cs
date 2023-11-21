@@ -1,23 +1,30 @@
 using BlazorApp.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using System.Security.Cryptography;
 using Widerpaper;
 
 namespace BlazorApp.Pages;
 
 public partial class Index
 {
-    #region Private Fields
-    private Toast _toastFinishedProcessing;
+	#region Fields
+	private Toast _toastFinishedProcessing;
     private Toast _toastUnselectedFile;
     private Toast _toastUnsupportedFile;
     private Toast _toastFileTooLarge;
 
-    private enum Algorithm { None = -1, SimpleMirror, BlurMirror }
+    private enum Algorithm { SimpleMirror, BlurMirror }
     private Algorithm _algorithmChosen = Algorithm.SimpleMirror;
 
-    //private string _inputFilePath; /* BUG in MAUI Blazor App when using LocalApplicationData. See: https://github.com/dotnet/runtime/issues/74884 */
-    private string _inputFileName;
+    private enum Upscaling { Original, TwoTimes, FourTimes}
+    private Upscaling _upscalingChosen = Upscaling.Original;
+
+	private enum Format { Original, Jpeg, Png }
+	private Format _formatChosen = Format.Original;
+
+	//private string _inputFilePath; /* BUG in MAUI Blazor App when using LocalApplicationData. See: https://github.com/dotnet/runtime/issues/74884 */
+	private string _inputFileName;
     private string _previousOuputFileName;
     private int _blurStrenght = 25;
 
@@ -43,11 +50,33 @@ public partial class Index
 
         img.SaveImage(_previousOuputFileName);
     }
-    #endregion
+
+    private string SetAlgorithmButtonsState(string tagClass, Algorithm algorithm, string tokenToReplace = "?")
+        => tagClass.Replace(tokenToReplace, _algorithmChosen == algorithm ? "primary no-hover" : "secondary");
+
+    private string SetUpscalingButtonsState(string tagClass, Upscaling upscaling, string tokenToReplace = "?")
+		=> tagClass.Replace(tokenToReplace, _upscalingChosen == upscaling ? "primary no-hover" : "secondary");
+
+	private string SetFormatButtonsState(string tagClass, Format format, string tokenToReplace = "?")
+		=> tagClass.Replace(tokenToReplace, _formatChosen == format ? "primary no-hover" : "secondary");
+	#endregion
+
+	#region On Click Handlers
+	private void OnClickSimpleMirrorBtn() => _algorithmChosen = Algorithm.SimpleMirror;
+	private void OnClickBlurMirrorBtn() => _algorithmChosen = Algorithm.BlurMirror;
+
+    private void OnClickUpscalingOriginalBtn() => _upscalingChosen = Upscaling.Original;
+    private void OnClickUpscalingTwoTimesBtn() => _upscalingChosen = Upscaling.TwoTimes;
+    private void OnClickUpscalingFourTimesBtn() => _upscalingChosen = Upscaling.FourTimes;
+
+	private void OnClickFormatOriginalBtn() => _formatChosen = Format.Original;
+	private void OnClickFormatJpegBtn() => _formatChosen = Format.Jpeg;
+	private void OnClickFormatPngBtn() => _formatChosen = Format.Png;
+	#endregion
 
 
-    #region On Tag Change
-    private async Task OnSelectImageAsync(InputFileChangeEventArgs e)
+	#region On Tag Change
+	private async Task OnSelectImageAsync(InputFileChangeEventArgs e)
     {
         const int MAX_FILE_SIZE = 10 * 1024 * 1024;
         if (e.File.Size > MAX_FILE_SIZE)
