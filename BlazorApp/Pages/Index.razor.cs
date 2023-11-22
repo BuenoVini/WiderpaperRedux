@@ -18,6 +18,7 @@ public partial class Index
     private Toast _toastUnselectedFile;
     private Toast _toastUnsupportedFile;
     private Toast _toastFileTooLarge;
+    private Toast _toastTooManyFiles;
 
     private enum Algorithm { SimpleMirror, BlurMirror }
     private Algorithm _algorithmChosen = Algorithm.SimpleMirror;
@@ -29,7 +30,7 @@ public partial class Index
 	private Format _formatChosen = Format.Original;
 
     //private string _inputFilePath; /* BUG in MAUI Blazor App when using LocalApplicationData. See: https://github.com/dotnet/runtime/issues/74884 */
-    private List<string> _loadedFiles;
+    private List<string> _loadedFiles = new();
 	private string _inputFileName;
     private string _previousOuputFileName;
     private int _blurStrenght = 25;
@@ -96,21 +97,33 @@ public partial class Index
 	#region On Change Handlers
 	private async Task OnChangeSelectImagesAsync(InputFileChangeEventArgs e)
     {
+        /* clearing the loaded files list */
         _loadedFiles.Clear();
 
-        //if (e.File.Size > _MAX_FILE_SIZE)
-        //    await _toastFileTooLarge.ShowToastAsync();
+		/* checking for forbidden files */
+		if (e.FileCount > _MAX_ALLOWED_FILES)
+        {
+            await _toastTooManyFiles.ShowToastAsync();
+            return;
+        }
 
-        //if (e.FileCount > _MAX_ALLOWED_FILES)
-        // TODO: create a new toast
+        foreach (IBrowserFile file in e.GetMultipleFiles())
+        {
+            if (file.Size > _MAX_FILE_SIZE)
+		    {
+			    await _toastFileTooLarge.ShowToastAsync();
+			    return;
+		    }
+        }
 
-        string appDataPath = GetWiderpaperFolderPath(Environment.SpecialFolder.LocalApplicationData);
+		string appDataPath = GetWiderpaperFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
         /* deleting previous files in AppData/Local/Widerpaper/ */
         foreach (FileInfo file in new DirectoryInfo(appDataPath).GetFiles())
             file.Delete();
 
-        foreach (IBrowserFile file in e.GetMultipleFiles(_MAX_ALLOWED_FILES))
+		/* saving a copy of the provided files in AppData/Local/Widerpaper/ */
+		foreach (IBrowserFile file in e.GetMultipleFiles(_MAX_ALLOWED_FILES))
         {
 			string filePath = Path.Combine(appDataPath, $"{Path.GetRandomFileName().Split('.')[0]}.{file.ContentType.Split('/')[1]}");
 
@@ -125,7 +138,6 @@ public partial class Index
             {
                 stream.Close();
                 File.Delete(filePath);
-                // TODO: create new toast
             }
         }
     }

@@ -215,5 +215,25 @@
 			</div>
 		</div>
 	</div>
+
+	<!--TOASTERS-->
+	<div class="toast-container position-fixed top-0 end-0 p-3">
+
+		<!--ERROR: FILE TOO LARGE-->
+		<Toast @ref="_toastFileTooLarge" Title="File is too large" ToastValidation="Toast.Validation.Error">
+			<Body>
+				<p>One or more files exceed the maximum allowed size.</p>
+				Please, select images up to @(_MAX_FILE_SIZE / (1024 * 1024)) MB.
+			</Body>
+		</Toast>
+
+		<!--ERROR: TOO MANY FILES-->
+		<Toast @ref="_toastTooManyFiles" Title="Too many files selected" ToastValidation="Toast.Validation.Error">
+			<Body>
+				<p>Widerpaper can process up to @_MAX_ALLOWED_FILES files on a single batch.</p>
+				Please, select fewer files and try again.
+			</Body>
+		</Toast>
+	</div>
 </div>
 
