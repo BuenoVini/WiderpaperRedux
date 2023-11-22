@@ -95,7 +95,7 @@ public partial class Index
 
 
 	#region On Change Handlers
-	private async Task OnChangeSelectImagesAsync(InputFileChangeEventArgs e)
+	private async Task OnChangeLoadImagesAsync(InputFileChangeEventArgs e)
     {
         /* clearing the loaded files list */
         _loadedFiles.Clear();
