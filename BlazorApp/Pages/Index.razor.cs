@@ -8,6 +8,11 @@ namespace BlazorApp.Pages;
 
 public partial class Index
 {
+	#region Constants
+	const int _MAX_FILE_SIZE = 10 * 1024 * 1024;
+    const int _MAX_ALLOWED_FILES = 20;
+	#endregion
+
 	#region Fields
 	private Toast _toastFinishedProcessing;
     private Toast _toastUnselectedFile;
@@ -23,7 +28,8 @@ public partial class Index
 	private enum Format { Original, Jpeg, Png }
 	private Format _formatChosen = Format.Original;
 
-	//private string _inputFilePath; /* BUG in MAUI Blazor App when using LocalApplicationData. See: https://github.com/dotnet/runtime/issues/74884 */
+    //private string _inputFilePath; /* BUG in MAUI Blazor App when using LocalApplicationData. See: https://github.com/dotnet/runtime/issues/74884 */
+    private List<string> _loadedFiles;
 	private string _inputFileName;
     private string _previousOuputFileName;
     private int _blurStrenght = 25;
@@ -44,7 +50,7 @@ public partial class Index
         return folderPath;
     }
 
-    private void SaveImage(WiderpaperImage img)
+	private void SaveImage(WiderpaperImage img)
     {
         _previousOuputFileName = Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures), $"{(new DateTimeOffset(DateTime.UtcNow)).ToUnixTimeMilliseconds()}.jpg");
 
@@ -61,6 +67,7 @@ public partial class Index
 		=> tagClass.Replace(tokenToReplace, _formatChosen == format ? "primary no-hover" : "secondary");
 	#endregion
 
+
 	#region On Click Handlers
 	private void OnClickSimpleMirrorBtn() => _algorithmChosen = Algorithm.SimpleMirror;
 	private void OnClickBlurMirrorBtn() => _algorithmChosen = Algorithm.BlurMirror;
@@ -76,6 +83,7 @@ public partial class Index
     private async Task OnClickOpenOutputFolderAsync() => await Launcher.Default.OpenAsync(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures));
 	#endregion
 
+
 	#region On Input Handlers
 	private void OnInputBlurStrenght(ChangeEventArgs e)
 	{
@@ -84,20 +92,42 @@ public partial class Index
 	}
 	#endregion
 
+
 	#region On Change Handlers
-	private async Task OnSelectImageAsync(InputFileChangeEventArgs e)
+	private async Task OnChangeSelectImagesAsync(InputFileChangeEventArgs e)
     {
-        const int MAX_FILE_SIZE = 10 * 1024 * 1024;
-        if (e.File.Size > MAX_FILE_SIZE)
-            await _toastFileTooLarge.ShowToastAsync();
+        _loadedFiles.Clear();
 
-        _inputFileName = e.File.Name;
+        //if (e.File.Size > _MAX_FILE_SIZE)
+        //    await _toastFileTooLarge.ShowToastAsync();
 
-        string _inputFilePath;  // TODO: delete this line when BUG is fixed: https://github.com/dotnet/runtime/issues/74884
-        _inputFilePath = Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.LocalApplicationData), "temp.jpg");
+        //if (e.FileCount > _MAX_ALLOWED_FILES)
+        // TODO: create a new toast
 
-        await using FileStream stream = new(_inputFilePath, FileMode.Create);
-        await e.File.OpenReadStream(MAX_FILE_SIZE).CopyToAsync(stream);
+        string appDataPath = GetWiderpaperFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
+        /* deleting previous files in AppData/Local/Widerpaper/ */
+        foreach (FileInfo file in new DirectoryInfo(appDataPath).GetFiles())
+            file.Delete();
+
+        foreach (IBrowserFile file in e.GetMultipleFiles(_MAX_ALLOWED_FILES))
+        {
+			string filePath = Path.Combine(appDataPath, $"{Path.GetRandomFileName().Split('.')[0]}.{file.ContentType.Split('/')[1]}");
+
+			await using FileStream stream = new(filePath, FileMode.Create);
+
+            try
+            {
+                await file.OpenReadStream(_MAX_FILE_SIZE).CopyToAsync(stream);
+                _loadedFiles.Add(filePath);
+            }
+            catch (Exception)
+            {
+                stream.Close();
+                File.Delete(filePath);
+                // TODO: create new toast
+            }
+        }
     }
 
     private void OnChangeBlurTransition(ChangeEventArgs e)

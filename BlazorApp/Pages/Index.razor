@@ -116,17 +116,19 @@
 		</div>
 
 		<div class="col">
+
 			<!--LOAD IMAGE AREA-->
 			<div class="row" style="min-height: 40vh;">
 				<div class="col">
 					<div id="display-drop-area" class="alert alert-light mb-4" style="position: relative">
-						<InputFile class="drop-area" style="z-index: 1;"></InputFile>
+						<InputFile OnChange="@OnChangeSelectImagesAsync" multiple class="drop-area" style="z-index: 1;"></InputFile>
 
 						<div class="text-center" style="z-index: 0; position: absolute">
 							<i class="bi bi-images text-secondary" style="font-size: 7.5rem; opacity: 20%"></i>
 
-							<p class="mb-1"><span class="text-primary fw-bold">Click to browse</span> or drag an image here</p>
-							<p><small>Supports: JPEG, JPG, and PNG up to 20 MB</small></p>
+							<p class="mb-1"><span class="text-primary fw-bold">Click to browse</span> or drag your images here</p>
+							<p><small>Supports: JPEG and PNG up to @(_MAX_FILE_SIZE / (1024 * 1024)) MB</small></p>
+							<p><small>Maximum of @_MAX_ALLOWED_FILES files</small></p>
 						</div>
 					</div>
 				</div>
