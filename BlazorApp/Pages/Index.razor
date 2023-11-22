@@ -16,12 +16,12 @@
 				
 				<!--BUTTONS-->
 				<div class="d-flex gap-2">
-					<button @onclick="OnClickSimpleMirrorBtn" type="button" class=@SetAlgorithmButtonsState("btn btn-? w-100", Algorithm.SimpleMirror))>
+					<button @onclick="OnClickSimpleMirrorBtn" type="button" class=@SetAlgorithmButtonsState("btn btn-sm w-100 btn-?", Algorithm.SimpleMirror)>
 						Simple
 						<InfoTooltip Message="Use this when you have an image with solid background color or repeating pattern." />
 					</button>
 
-					<button @onclick="OnClickBlurMirrorBtn" type="button" class=@SetAlgorithmButtonsState("btn btn-? w-100", Algorithm.BlurMirror))>
+					<button @onclick="OnClickBlurMirrorBtn" type="button" class=@SetAlgorithmButtonsState("btn btn-sm w-100 btn-?", Algorithm.BlurMirror)>
 						Blurred
 						<InfoTooltip Message="Use this when the Simple algorithm yields too many repeating pattern." />
 					</button>
@@ -67,7 +67,7 @@
 				</h5>
 
 				<!--BUTTONS-->
-				<div class="btn-group d-flex" role="group" aria-label="Basic example">
+				<div class="btn-group btn-group-sm d-flex" role="group" aria-label="Basic example">
 					<button @onclick="OnClickUpscalingOriginalBtn" type="button" class=@SetUpscalingButtonsState("btn btn-? flex-fill", Upscaling.Original)>Original</button>
 					<button @onclick="OnClickUpscalingTwoTimesBtn" type="button" class=@SetUpscalingButtonsState("btn btn-? flex-fill", Upscaling.TwoTimes)>2x</button>
 					<button @onclick="OnClickUpscalingFourTimesBtn" type="button" class=@SetUpscalingButtonsState("btn btn-? flex-fill", Upscaling.FourTimes)>4x</button>
@@ -83,7 +83,7 @@
 				</h5>
 
 				<!--BUTTONS-->
-				<div class="btn-group d-flex" role="group" aria-label="Basic example">
+				<div class="btn-group btn-group-sm d-flex" role="group" aria-label="Basic example">
 					<button @onclick="OnClickFormatOriginalBtn" type="button" class=@SetFormatButtonsState("btn btn-? flex-fill", Format.Original)>Original</button>
 					<button @onclick="OnClickFormatJpegBtn" type="button" class="@SetFormatButtonsState("btn btn-? flex-fill", Format.Jpeg)">JPEG</button>
 					<button @onclick="OnClickFormatPngBtn" type="button" class="@SetFormatButtonsState("btn btn-? flex-fill", Format.Png)">PNG</button>
