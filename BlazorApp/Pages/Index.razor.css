@@ -3,7 +3,7 @@
     border-color: #0d6efd;
 }
 
-img {
+.thumbnail {
     object-fit: cover;
     width: 134px;
     height: 75px;
