@@ -1,7 +1,6 @@
 using BlazorApp.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using System.Security.Cryptography;
 using Widerpaper;
 
 namespace BlazorApp.Pages;
@@ -13,6 +12,7 @@ public partial class Index
     const int _MAX_ALLOWED_FILES = 20;
 	#endregion
 
+	
 	#region Fields
 	private Toast _toastFinishedProcessing;
     private Toast _toastUnselectedFile;
@@ -107,32 +107,28 @@ public partial class Index
             return;
         }
 
-        foreach (IBrowserFile file in e.GetMultipleFiles())
+        if (e.GetMultipleFiles().Any(file => file.Size > _MAX_FILE_SIZE))
         {
-            if (file.Size > _MAX_FILE_SIZE)
-		    {
-			    await _toastFileTooLarge.ShowToastAsync();
-			    return;
-		    }
+	        await _toastFileTooLarge.ShowToastAsync();
+	        return;
         }
 
-		string appDataPath = GetWiderpaperFolderPath(Environment.SpecialFolder.LocalApplicationData);
-
-        /* deleting previous files in AppData/Local/Widerpaper/ */
-        foreach (FileInfo file in new DirectoryInfo(appDataPath).GetFiles())
+        /* deleting previous files in wwwroot/images/ */
+        foreach (FileInfo file in new DirectoryInfo("wwwroot/images").GetFiles())
             file.Delete();
 
-		/* saving a copy of the provided files in AppData/Local/Widerpaper/ */
+		/* saving a copy of the provided files in wwwroot/images/ */
 		foreach (IBrowserFile file in e.GetMultipleFiles(_MAX_ALLOWED_FILES))
-        {
-			string filePath = Path.Combine(appDataPath, $"{Path.GetRandomFileName().Split('.')[0]}.{file.ContentType.Split('/')[1]}");
+		{
+			string fileName = $"{Path.GetRandomFileName().Split('.')[0]}.{file.ContentType.Split('/')[1]}";
+			string filePath = Path.Combine("wwwroot/images", fileName);
 
 			await using FileStream stream = new(filePath, FileMode.Create);
 
             try
             {
                 await file.OpenReadStream(_MAX_FILE_SIZE).CopyToAsync(stream);
-                _loadedFiles.Add(filePath);
+                _loadedFiles.Add(Path.Combine("images", fileName));
             }
             catch (Exception)
             {

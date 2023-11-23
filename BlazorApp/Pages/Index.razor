@@ -148,120 +148,42 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td class="align-middle">
-									<button class="btn">
-										<i class="bi bi-trash-fill text-danger"></i>
-									</button>
-								</td>
-								<td>
-									<img src="images/57.jpg" class="thumbnail figure-img img-fluid rounded my-1" alt="...">
-								</td>
-								<td>
-									1366 x 768 px
-									<br />
-									1.1 MP
-									<br />
-									105 KB
-								</td>
-								<td>
-									5464 × 3072 px
-									<br />
-									16.8 MP
-									<br />
-									1.5 MB
-								</td>
-								<td>
-									Ready
-								</td>
-							</tr>
-
-							<tr>
-								<td class="align-middle">
-									<button class="btn">
-										<i class="bi bi-trash-fill text-danger"></i>
-									</button>
-								</td>
-								<td>
-									<img src="images/1.png" class="thumbnail figure-img img-fluid rounded my-1" alt="...">
-								</td>
-								<td>
-									1366 x 768 px
-									<br />
-									1.1 MP
-									<br />
-									105 KB
-								</td>
-								<td>
-									5464 × 3072 px
-									<br />
-									16.8 MP
-									<br />
-									1.5 MB
-								</td>
-								<td>
-									Ready
-								</td>
-							</tr>
-
-							<tr>
-								<td class="align-middle">
-									<button class="btn">
-										<i class="bi bi-trash-fill text-danger"></i>
-									</button>
-								</td>
-								<td>
-									<img src="images/57.jpg" class="thumbnail figure-img img-fluid rounded my-1" alt="...">
-								</td>
-								<td>
-									1366 x 768 px
-									<br />
-									1.1 MP
-									<br />
-									105 KB
-								</td>
-								<td>
-									5464 × 3072 px
-									<br />
-									16.8 MP
-									<br />
-									1.5 MB
-								</td>
-								<td>
-									Ready
-								</td>
-							</tr>
-
-							<tr>
-								<td class="align-middle">
-									<button class="btn">
-										<i class="bi bi-trash-fill text-danger"></i>
-									</button>
-								</td>
-								<td>
-									<img src="images/1.png" class="thumbnail figure-img img-fluid rounded my-1" alt="...">
-								</td>
-								<td>
-									1366 x 768 px
-									<br />
-									1.1 MP
-									<br />
-									105 KB
-								</td>
-								<td>
-									5464 × 3072 px
-									<br />
-									16.8 MP
-									<br />
-									1.5 MB
-								</td>
-								<td>
-									Ready
-								</td>
-							</tr>
+							@foreach (string imagePath in _loadedFiles)
+							{
+								<tr>
+									<td class="align-middle">
+										<button class="btn">
+											<i class="bi bi-trash-fill text-danger"></i>
+										</button>
+									</td>
+									<td>
+										<img src=@imagePath class="thumbnail figure-img img-fluid rounded my-1" alt="...">
+									</td>
+									<td>
+										1366 x 768 px
+										<br/>
+										1.1 MP
+										<br/>
+										105 KB
+									</td>
+									<td>
+										5464 × 3072 px
+										<br/>
+										16.8 MP
+										<br/>
+										1.5 MB
+									</td>
+									<td>
+										Ready
+									</td>
+								</tr>
+							}
 						</tbody>
 					</table>
-					<p class="text-center mt-5">Your loaded images will appear here.</p>
+					@if (_loadedFiles.Count <= 0)
+					{
+						<p class="text-center mt-5">Your loaded images will appear here.</p>
+					}
 				</div>
 			</div>
 		</div>
