@@ -148,76 +148,76 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach (WiderpaperMetadata image in _loadedMetadataImages)
-                        {
-                            <tr>
-                                <td class="align-middle">
-                                    <button class="btn">
-                                        <i class="bi bi-trash-fill text-danger"></i>
-                                    </button>
-                                </td>
-                                <td>
-                                    <img src=@image.Path.Replace("wwwroot/", "") class="thumbnail figure-img img-fluid rounded my-1" alt="...">
-                                </td>
-                                <td>
-                                    @image.Width x @image.Height px
-                                    <br/>
+	                        @foreach (WiderpaperMetadata image in _loadedMetadataImages)
+	                        {
+	                            <tr>
+	                                <td class="align-middle">
+	                                    <button class="btn">
+	                                        <i class="bi bi-trash-fill text-danger"></i>
+	                                    </button>
+	                                </td>
+	                                <td>
+	                                    <img src=@image.Path.Replace("wwwroot/", "") class="thumbnail figure-img img-fluid rounded my-1" alt="...">
+	                                </td>
+	                                <td>
+	                                    @image.Width x @image.Height px
+	                                    <br/>
 
-                                    @Math.Round(image.Width * image.Height / 1e6, 2, MidpointRounding.ToEven) MP
-                                    <br/>
+	                                    @Math.Round(image.Width * image.Height / 1e6, 2, MidpointRounding.ToEven) MP
+	                                    <br/>
 
-                                    @if (image.Size >= 0 && image.Size < 1e3)
-                                    {
-                                        <p>@image.Size Bytes</p>
-                                    }
-                                    else if (image.Size < 1e6)
-                                    {
-                                        <p>@Math.Round(image.Size / 1024f, 2, MidpointRounding.ToEven) KB</p>
-                                    }
-                                    else if (image.Size < 1e9)
-                                    {
-                                        <p>@Math.Round(image.Size / (1024 * 1024f), 2, MidpointRounding.ToEven) MB</p>
-                                    }
-                                </td>
-                                <td>
-                                    @{
-                                        int upscaling = _upscalingChosen switch
-                                        {
-                                            Upscaling.Original => 1,
-                                            Upscaling.TwoTimes => 2,
-                                            Upscaling.FourTimes => 3,
-                                            _ => throw new ArgumentOutOfRangeException()
-                                        };
+	                                    @if (image.Size >= 0 && image.Size < 1e3)
+	                                    {
+	                                        <p>@image.Size Bytes</p>
+	                                    }
+	                                    else if (image.Size < 1e6)
+	                                    {
+	                                        <p>@Math.Round(image.Size / 1024f, 2, MidpointRounding.ToEven) KB</p>
+	                                    }
+	                                    else if (image.Size < 1e9)
+	                                    {
+	                                        <p>@Math.Round(image.Size / (1024 * 1024f), 2, MidpointRounding.ToEven) MB</p>
+	                                    }
+	                                </td>
+	                                <td>
+	                                    @{
+	                                        int upscaling = _upscalingChosen switch
+	                                        {
+	                                            Upscaling.Original => 1,
+	                                            Upscaling.TwoTimes => 2,
+	                                            Upscaling.FourTimes => 3,
+	                                            _ => throw new ArgumentOutOfRangeException()
+	                                        };
 
-                                        int newWidth = image.Height * (21 / 9) * upscaling;
-                                        int newHeight = image.Height * upscaling;
-                                        float newSize = image.Size * upscaling;
-                                    }
+	                                        int newWidth = image.Height * (21 / 9) * upscaling;
+	                                        int newHeight = image.Height * upscaling;
+	                                        float newSize = image.Size * upscaling;
+	                                    }
 
-                                    @newWidth x @newHeight px
-                                    <br/>
+	                                    @newWidth x @newHeight px
+	                                    <br/>
 
-                                    @Math.Round(newWidth * newHeight / 1e6, 2, MidpointRounding.ToEven) MP
-                                    <br/>
-                                    
-                                    @if (newSize >= 0 && newSize < 1e3)
-                                    {
-                                        <p>@newSize Bytes</p>
-                                    }
-                                    else if (newSize < 1e6)
-                                    {
-                                        <p>@Math.Round(newSize / 1024f, 2, MidpointRounding.ToEven) KB</p>
-                                    }
-                                    else if (newSize < 1e9)
-                                    {
-                                        <p>@Math.Round(newSize / (1024 * 1024f), 2, MidpointRounding.ToEven) MB</p>
-                                    }
-                                </td>
-                                <td>
-                                    Ready
-                                </td>
-                            </tr>
-                        }
+	                                    @Math.Round(newWidth * newHeight / 1e6, 2, MidpointRounding.ToEven) MP
+	                                    <br/>
+	                                    
+	                                    @if (newSize >= 0 && newSize < 1e3)
+	                                    {
+	                                        <p>@newSize Bytes</p>
+	                                    }
+	                                    else if (newSize < 1e6)
+	                                    {
+	                                        <p>@Math.Round(newSize / 1024f, 2, MidpointRounding.ToEven) KB</p>
+	                                    }
+	                                    else if (newSize < 1e9)
+	                                    {
+	                                        <p>@Math.Round(newSize / (1024 * 1024f), 2, MidpointRounding.ToEven) MB</p>
+	                                    }
+	                                </td>
+	                                <td>
+	                                    Ready
+	                                </td>
+	                            </tr>
+	                        }
                         </tbody>
                     </table>
                     @if (_loadedMetadataImages.Count <= 0)
