@@ -14,6 +14,8 @@ public partial class Index
 
 	
 	#region Fields
+	private List<WiderpaperMetadata> _loadedMetadataImages = new();
+	
 	private Toast _toastFinishedProcessing;
     private Toast _toastUnselectedFile;
     private Toast _toastUnsupportedFile;
@@ -30,7 +32,6 @@ public partial class Index
 	private Format _formatChosen = Format.Original;
 
     //private string _inputFilePath; /* BUG in MAUI Blazor App when using LocalApplicationData. See: https://github.com/dotnet/runtime/issues/74884 */
-    private List<string> _loadedFiles = new();
 	private string _inputFileName;
     private string _previousOuputFileName;
     private int _blurStrenght = 25;
@@ -97,15 +98,17 @@ public partial class Index
 	#region On Change Handlers
 	private async Task OnChangeLoadImagesAsync(InputFileChangeEventArgs e)
     {
-        /* clearing the loaded files list */
-        _loadedFiles.Clear();
+        /* clearing the loaded images metadata list */
+        _loadedMetadataImages.Clear();
 
-		/* checking for forbidden files */
+		/* checking for forbidden files selected by the user */
 		if (e.FileCount > _MAX_ALLOWED_FILES)
         {
             await _toastTooManyFiles.ShowToastAsync();
             return;
         }
+		
+		// TODO: perform file signature validation
 
         if (e.GetMultipleFiles().Any(file => file.Size > _MAX_FILE_SIZE))
         {
@@ -113,22 +116,24 @@ public partial class Index
 	        return;
         }
 
-        /* deleting previous files in wwwroot/images/ */
+        /* deleting previous images in wwwroot/images/ */
         foreach (FileInfo file in new DirectoryInfo("wwwroot/images").GetFiles())
             file.Delete();
 
-		/* saving a copy of the provided files in wwwroot/images/ */
+		/* saving a copy of the selected images in wwwroot/images/ */
 		foreach (IBrowserFile file in e.GetMultipleFiles(_MAX_ALLOWED_FILES))
 		{
 			string fileName = $"{Path.GetRandomFileName().Split('.')[0]}.{file.ContentType.Split('/')[1]}";
 			string filePath = Path.Combine("wwwroot/images", fileName);
 
-			await using FileStream stream = new(filePath, FileMode.Create);
+			FileStream stream = new(filePath, FileMode.Create);
 
             try
             {
                 await file.OpenReadStream(_MAX_FILE_SIZE).CopyToAsync(stream);
-                _loadedFiles.Add(Path.Combine("images", fileName));
+                stream.Close();
+                
+                _loadedMetadataImages.Add(new WiderpaperMetadata(Path.Combine("wwwroot/images", fileName), file.Size));
             }
             catch (Exception)
             {
