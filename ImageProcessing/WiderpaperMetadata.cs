@@ -3,6 +3,7 @@
 public class WiderpaperMetadata
 {
     public string Path { get; }
+    public string Extension { get; }
     public int Width { get; }
     public int Height { get; }
     public long Size { get; }
@@ -11,9 +12,13 @@ public class WiderpaperMetadata
     {
         Path = path;
         Size = size;
+        
+        // TODO: perform file signature validation
 
         using Image image = Image.Load(path);
         Width = image.Width;
         Height = image.Height;
+
+        Extension = path.Split('.')[1];
     }
 }

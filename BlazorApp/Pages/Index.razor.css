@@ -3,12 +3,6 @@
     border-color: var(--bs-blue);
 }
 
-.thumbnail {
-    object-fit: cover;
-    width: 134px;
-    height: 75px;
-}
-
 #display-drop-area {
     display: flex;
     align-items: center;

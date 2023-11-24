@@ -1,0 +1,75 @@
+﻿<tr>
+	<td class="align-middle">
+		<button @onclick="@OnClickDeleteRowBtnAsync" class="btn">
+			<i class="bi bi-trash-fill text-danger"></i>
+		</button>
+	</td>
+	<td>
+		<img src=@Image.Path.Replace("wwwroot/", "") class="thumbnail figure-img img-fluid rounded my-1" alt="...">
+	</td>
+	<td>
+		@Image.Width x @Image.Height px
+		<br />
+
+		@Math.Round(Image.Width * Image.Height / 1e6, 2, MidpointRounding.ToEven) MP
+		<br />
+
+		@if (Image.Size >= 0 && Image.Size < 1e3)
+		{
+			<p>@Image.Size Bytes</p>
+		}
+		else if (Image.Size < 1e6)
+		{
+			<p>@Math.Round(Image.Size / 1024f, 2, MidpointRounding.ToEven) KB</p>
+		}
+		else if (Image.Size < 1e9)
+		{
+			<p>@Math.Round(Image.Size / (1024 * 1024f), 2, MidpointRounding.ToEven) MB</p>
+		}
+	</td>
+	<td>
+		@{
+			int upscaling = UpscalingChosen switch
+			{
+				Pages.Index.Upscaling.Original => 1,
+				Pages.Index.Upscaling.TwoTimes => 2,
+				Pages.Index.Upscaling.FourTimes => 3,
+				_ => throw new ArgumentOutOfRangeException()
+			};
+
+			int newWidth = Image.Height * (21 / 9) * upscaling;
+			int newHeight = Image.Height * upscaling;
+			float newSize = Image.Size * upscaling;
+		}
+
+		@newWidth x @newHeight px
+		<br />
+
+		@Math.Round(newWidth * newHeight / 1e6, 2, MidpointRounding.ToEven) MP
+		<br />
+
+		@if (newSize >= 0 && newSize < 1e3)
+		{
+			<p>@newSize Bytes</p>
+		}
+		else if (newSize < 1e6)
+		{
+			<p>@Math.Round(newSize / 1024f, 2, MidpointRounding.ToEven) KB</p>
+		}
+		else if (newSize < 1e9)
+		{
+			<p>@Math.Round(newSize / (1024 * 1024f), 2, MidpointRounding.ToEven) MB</p>
+		}
+	</td>
+	<td>
+		Ready
+	</td>
+</tr>
+
+@code {
+	[Parameter, EditorRequired] public WiderpaperMetadata Image { get; set; }
+	[Parameter, EditorRequired] public Pages.Index.Upscaling UpscalingChosen { get; set; }
+	[Parameter, EditorRequired] public EventCallback<WiderpaperMetadata> OnClickDeleteRowBtnCallback { get; set; }
+
+	private async Task OnClickDeleteRowBtnAsync() => await OnClickDeleteRowBtnCallback.InvokeAsync(Image);
+}

@@ -22,13 +22,13 @@ public partial class Index
     private Toast _toastFileTooLarge;
     private Toast _toastTooManyFiles;
 
-    private enum Algorithm { SimpleMirror, BlurMirror }
+    public enum Algorithm { SimpleMirror, BlurMirror }
     private Algorithm _algorithmChosen = Algorithm.SimpleMirror;
 
-    private enum Upscaling { Original, TwoTimes, FourTimes}
+    public enum Upscaling { Original, TwoTimes, FourTimes}
     private Upscaling _upscalingChosen = Upscaling.Original;
 
-	private enum Format { Original, Jpeg, Png }
+	public enum Format { Original, Jpeg, Png }
 	private Format _formatChosen = Format.Original;
 
     //private string _inputFilePath; /* BUG in MAUI Blazor App when using LocalApplicationData. See: https://github.com/dotnet/runtime/issues/74884 */
@@ -82,7 +82,11 @@ public partial class Index
 	private void OnClickFormatJpegBtn() => _formatChosen = Format.Jpeg;
 	private void OnClickFormatPngBtn() => _formatChosen = Format.Png;
 
-    private async Task OnClickOpenOutputFolderAsync() => await Launcher.Default.OpenAsync(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures));
+	private void OnClickDeleteRowBtn(WiderpaperMetadata imageToDelete) =>
+		_loadedMetadataImages.RemoveAt(_loadedMetadataImages.FindIndex(image => image.Path == imageToDelete.Path));
+
+    private async Task OnClickOpenOutputFolderAsync() => 
+	    await Launcher.Default.OpenAsync(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures));
 	#endregion
 
 
