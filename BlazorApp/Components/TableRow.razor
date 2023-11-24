@@ -37,9 +37,10 @@
 				_ => throw new ArgumentOutOfRangeException()
 			};
 
-			int newWidth = Image.Height * (21 / 9) * upscaling;
-			int newHeight = Image.Height * upscaling;
-			float newSize = Image.Size * upscaling;
+			int newHeight = upscaling * Image.Height;
+			int newWidth = newHeight * 21 / 9;
+			
+			float newSize = upscaling * Image.Size;
 		}
 
 		@newWidth x @newHeight px
