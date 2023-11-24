@@ -16,15 +16,15 @@
 
 		@if (Image.Size >= 0 && Image.Size < 1e3)
 		{
-			<p>@Image.Size Bytes</p>
+			<span>@Image.Size Bytes</span>
 		}
 		else if (Image.Size < 1e6)
 		{
-			<p>@Math.Round(Image.Size / 1024f, 2, MidpointRounding.ToEven) KB</p>
+			<span>@Math.Round(Image.Size / 1024f, 2, MidpointRounding.ToEven) KB</span>
 		}
 		else if (Image.Size < 1e9)
 		{
-			<p>@Math.Round(Image.Size / (1024 * 1024f), 2, MidpointRounding.ToEven) MB</p>
+			<span>@Math.Round(Image.Size / (1024 * 1024f), 2, MidpointRounding.ToEven) MB</span>
 		}
 	</td>
 	<td>
@@ -51,15 +51,15 @@
 
 		@if (newSize >= 0 && newSize < 1e3)
 		{
-			<p>@newSize Bytes</p>
+			<span>@newSize Bytes</span>
 		}
 		else if (newSize < 1e6)
 		{
-			<p>@Math.Round(newSize / 1024f, 2, MidpointRounding.ToEven) KB</p>
+			<span>@Math.Round(newSize / 1024f, 2, MidpointRounding.ToEven) KB</span>
 		}
 		else if (newSize < 1e9)
 		{
-			<p>@Math.Round(newSize / (1024 * 1024f), 2, MidpointRounding.ToEven) MB</p>
+			<span>@Math.Round(newSize / (1024 * 1024f), 2, MidpointRounding.ToEven) MB</span>
 		}
 	</td>
 	<td>
