@@ -17,7 +17,7 @@ public partial class Index
 	private List<WiderpaperMetadata> _loadedMetadataImages = new();
 	
 	private Toast _toastFinishedProcessing;
-    private Toast _toastUnselectedFile;
+    private Toast _toastUnselectedFiles;
     private Toast _toastUnsupportedFile;
     private Toast _toastFileTooLarge;
     private Toast _toastTooManyFiles;
@@ -87,6 +87,50 @@ public partial class Index
 
     private async Task OnClickOpenOutputFolderAsync() => 
 	    await Launcher.Default.OpenAsync(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures));
+    
+    private async Task OnClickStartProcessingAsync()
+    {
+	    if (_loadedMetadataImages.Count <= 0)
+	    {
+		    await _toastUnselectedFiles.ShowToastAsync();
+		    return;
+	    }
+
+	    _isProcessingImage = true;
+
+	    foreach (WiderpaperMetadata image in _loadedMetadataImages)
+	    {
+		    try
+		    {
+			    using WiderpaperImage imgInput = new(image.Path);
+			    
+			    WiderpaperImage imgOutput;
+			    using (imgOutput = new())
+			    {
+					switch (_algorithmChosen)
+					{
+						case Algorithm.SimpleMirror:
+							imgOutput = WiderpaperProcessing.ApplyMirror(imgInput);
+							break;
+	
+						case Algorithm.BlurMirror:
+							await Task.Run(() => imgOutput = _shouldBlurTransition ? WiderpaperProcessing.ApplyGradientBlurMirror(imgInput, _blurStrenght) : WiderpaperProcessing.ApplyBlurMirror(imgInput, _blurStrenght));
+							break;
+					}
+					
+					SaveImage(imgOutput);
+			    }
+			    
+			    // await _toastFinishedProcessing.ShowToastAsync();
+		    }
+		    catch (WiderpaperException)
+		    {
+			    await _toastUnsupportedFile.ShowToastAsync();
+		    }
+	    }
+
+	    _isProcessingImage = false;
+    }
 	#endregion
 
 
@@ -157,47 +201,5 @@ public partial class Index
 
     #region Buttons Action
     private async Task OpenProcessedImageAsync() => await Launcher.Default.OpenAsync(_previousOuputFileName);
-
-    private async Task ProcessImageAsync()
-    {
-        if (string.IsNullOrEmpty(_inputFileName))
-        {
-            await _toastUnselectedFile.ShowToastAsync();
-            return;
-        }
-
-        _isProcessingImage = true;
-
-        string _inputFilePath = Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.LocalApplicationData), "temp.jpg");  // TODO: delete this line when BUG is fixed: https://github.com/dotnet/runtime/issues/74884
-        try
-        {
-            using WiderpaperImage imgInput = new(_inputFilePath);
-            WiderpaperImage imgOutput;
-
-            using (imgOutput = new())
-            {
-                switch (_algorithmChosen)
-                {
-                    case Algorithm.SimpleMirror:
-                        imgOutput = WiderpaperProcessing.ApplyMirror(imgInput);
-                        break;
-
-                    case Algorithm.BlurMirror:
-                        await Task.Run(() => imgOutput = _shouldBlurTransition ? WiderpaperProcessing.ApplyGradientBlurMirror(imgInput, _blurStrenght) : WiderpaperProcessing.ApplyBlurMirror(imgInput, _blurStrenght));
-                        break;
-                }
-            }
-
-            SaveImage(imgOutput);
-
-            await _toastFinishedProcessing.ShowToastAsync();
-        }
-        catch (WiderpaperException)
-        {
-            await _toastUnsupportedFile.ShowToastAsync();
-        }
-
-        _isProcessingImage = false;
-    }
     #endregion
 }

@@ -107,9 +107,9 @@
 				</code>
 			</div>
 
-			<!--CONVERT BUTTON-->
+			<!--START PROCESSING BUTTON-->
 			<div class="d-grid mb-4">
-				<button type="button" class="btn btn-primary">Convert to Ultrawide!</button>
+				<button @onclick="OnClickStartProcessingAsync" disabled="@(_loadedMetadataImages.Count <= 0)" type="button" class="btn btn-primary">Convert to Ultrawide!</button>
 			</div>
 		</div>
 
