@@ -15,7 +15,7 @@ public partial class Index
 	
 	#region Fields
 	private List<WiderpaperMetadata> _loadedMetadataImages = new();
-	
+
 	private Toast _toastFinishedProcessing;
     private Toast _toastUnselectedFiles;
     private Toast _toastUnsupportedFile;
@@ -31,13 +31,11 @@ public partial class Index
 	public enum Format { Original, Jpeg, Png }
 	private Format _formatChosen = Format.Original;
 
-    //private string _inputFilePath; /* BUG in MAUI Blazor App when using LocalApplicationData. See: https://github.com/dotnet/runtime/issues/74884 */
-	private string _inputFileName;
     private string _previousOuputFileName;
     private int _blurStrenght = 25;
 
     private bool _shouldBlurTransition = true;
-    private bool _isProcessingImage = false;
+    private bool _isProcessingStarted = false;
     #endregion
 
 
@@ -96,10 +94,13 @@ public partial class Index
 		    return;
 	    }
 
-	    _isProcessingImage = true;
+	    _isProcessingStarted = true;
 
 	    foreach (WiderpaperMetadata image in _loadedMetadataImages)
 	    {
+		    image.State = WiderpaperMetadata.ProcessingState.Processing;
+		    await InvokeAsync(StateHasChanged);
+		    
 		    try
 		    {
 			    using WiderpaperImage imgInput = new(image.Path);
@@ -120,8 +121,8 @@ public partial class Index
 					
 					SaveImage(imgOutput);
 			    }
-			    
-			    // await _toastFinishedProcessing.ShowToastAsync();
+
+			    image.State = WiderpaperMetadata.ProcessingState.Done;
 		    }
 		    catch (WiderpaperException)
 		    {
@@ -129,7 +130,7 @@ public partial class Index
 		    }
 	    }
 
-	    _isProcessingImage = false;
+	    _isProcessingStarted = false;
     }
 	#endregion
 

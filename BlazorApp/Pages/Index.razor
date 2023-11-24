@@ -22,12 +22,12 @@
 				
 				<!--BUTTONS-->
 				<div class="d-flex gap-2">
-					<button @onclick="OnClickSimpleMirrorBtn" type="button" class=@SetAlgorithmButtonsState("btn btn-sm w-100 btn-?", Algorithm.SimpleMirror)>
+					<button @onclick="OnClickSimpleMirrorBtn" type="button" class=@SetAlgorithmButtonsState("btn btn-sm w-100 btn-?", Algorithm.SimpleMirror) disabled="@_isProcessingStarted">
 						Simple
 						<InfoTooltip Message="Use this when you have an image with solid background color or repeating pattern." />
 					</button>
 
-					<button @onclick="OnClickBlurMirrorBtn" type="button" class=@SetAlgorithmButtonsState("btn btn-sm w-100 btn-?", Algorithm.BlurMirror)>
+					<button @onclick="OnClickBlurMirrorBtn" type="button" class=@SetAlgorithmButtonsState("btn btn-sm w-100 btn-?", Algorithm.BlurMirror) disabled="@_isProcessingStarted">
 						Blurred
 						<InfoTooltip Message="Use this when the Simple algorithm yields too many repeating pattern." />
 					</button>
@@ -51,11 +51,11 @@
 								</div>
 							</div>
 						</div>
-						<input @oninput="OnInputBlurStrenght" id="blurStrenght" type="range" class="form-range" min="5" max="50" step="5" value="@_blurStrenght" />
+						<input @oninput="OnInputBlurStrenght" id="blurStrenght" type="range" class="form-range" min="5" max="50" step="5" value="@_blurStrenght" disabled="@_isProcessingStarted"/>
 					</div>
 
 					<div class="form-check form-switch">
-						<input @onchange="OnChangeBlurTransition" checked="@true" class="form-check-input" type="checkbox" role="switch" id="flexSwitch">
+						<input @onchange="OnChangeBlurTransition" checked="@true" class="form-check-input" type="checkbox" role="switch" id="flexSwitch" disabled="@_isProcessingStarted">
 						<label class="form-check-label" for="flexSwitch">
 							Apply blur transition?
 							<InfoTooltip Message="Create a gradient transition from the blurred expanded area to the center of the image." />
@@ -74,9 +74,9 @@
 
 				<!--BUTTONS-->
 				<div class="btn-group btn-group-sm d-flex" role="group" aria-label="Basic example">
-					<button @onclick="OnClickUpscalingOriginalBtn" type="button" class=@SetUpscalingButtonsState("btn btn-? flex-fill", Upscaling.Original)>Original</button>
-					<button @onclick="OnClickUpscalingTwoTimesBtn" type="button" class=@SetUpscalingButtonsState("btn btn-? flex-fill", Upscaling.TwoTimes)>2x</button>
-					<button @onclick="OnClickUpscalingFourTimesBtn" type="button" class=@SetUpscalingButtonsState("btn btn-? flex-fill", Upscaling.FourTimes)>4x</button>
+					<button @onclick="OnClickUpscalingOriginalBtn" type="button" class=@SetUpscalingButtonsState("btn btn-? flex-fill", Upscaling.Original) disabled="@_isProcessingStarted">Original</button>
+					<button @onclick="OnClickUpscalingTwoTimesBtn" type="button" class=@SetUpscalingButtonsState("btn btn-? flex-fill", Upscaling.TwoTimes) disabled="@_isProcessingStarted">2x</button>
+					<button @onclick="OnClickUpscalingFourTimesBtn" type="button" class=@SetUpscalingButtonsState("btn btn-? flex-fill", Upscaling.FourTimes) disabled="@_isProcessingStarted">4x</button>
 				</div>
 			</div>
 
@@ -90,9 +90,9 @@
 
 				<!--BUTTONS-->
 				<div class="btn-group btn-group-sm d-flex" role="group" aria-label="Basic example">
-					<button @onclick="OnClickFormatOriginalBtn" type="button" class=@SetFormatButtonsState("btn btn-? flex-fill", Format.Original)>Original</button>
-					<button @onclick="OnClickFormatJpegBtn" type="button" class="@SetFormatButtonsState("btn btn-? flex-fill", Format.Jpeg)">JPEG</button>
-					<button @onclick="OnClickFormatPngBtn" type="button" class="@SetFormatButtonsState("btn btn-? flex-fill", Format.Png)">PNG</button>
+					<button @onclick="OnClickFormatOriginalBtn" type="button" class=@SetFormatButtonsState("btn btn-? flex-fill", Format.Original) disabled="@_isProcessingStarted">Original</button>
+					<button @onclick="OnClickFormatJpegBtn" type="button" class="@SetFormatButtonsState("btn btn-? flex-fill", Format.Jpeg)" disabled="@_isProcessingStarted">JPEG</button>
+					<button @onclick="OnClickFormatPngBtn" type="button" class="@SetFormatButtonsState("btn btn-? flex-fill", Format.Png)" disabled="@_isProcessingStarted">PNG</button>
 				</div>
 			</div>
 
@@ -109,7 +109,17 @@
 
 			<!--START PROCESSING BUTTON-->
 			<div class="d-grid mb-4">
-				<button @onclick="OnClickStartProcessingAsync" disabled="@(_loadedMetadataImages.Count <= 0)" type="button" class="btn btn-primary">Convert to Ultrawide!</button>
+				<button @onclick="OnClickStartProcessingAsync" type="button" class="btn btn-primary" disabled="@(_loadedMetadataImages.Count <= 0 || _isProcessingStarted)">
+					@if (_isProcessingStarted)
+					{
+						<span role="status">Conversion started</span>
+						<span class="ms-2 spinner-border spinner-border-sm" aria-hidden="true"></span>
+					}
+					else
+					{
+						<span>Convert to Ultrawide!</span>
+					}
+				</button>
 			</div>
 		</div>
 
@@ -119,7 +129,7 @@
             <div class="row" style="min-height: 40vh;">
                 <div class="col">
                     <div id="display-drop-area" class="alert alert-light mb-4" style="position: relative">
-                        <InputFile OnChange="@OnChangeLoadImagesAsync" multiple accept=".jpg, .jpeg, .png" class="drop-area" style="z-index: 1;" title=" "></InputFile>
+                        <InputFile OnChange="@OnChangeLoadImagesAsync" multiple accept=".jpg, .jpeg, .png" class="drop-area" style="z-index: 1;" title=" " disabled="@_isProcessingStarted"></InputFile>
 
 						<div class="text-center" style="z-index: 0; position: absolute">
 							<i class="bi bi-images text-secondary" style="font-size: 7.5rem; opacity: 20%"></i>

@@ -2,6 +2,9 @@
 
 public class WiderpaperMetadata
 {
+    public enum ProcessingState { Loaded, Processing, Done };
+    public ProcessingState State { get; set; }
+    
     public string Path { get; }
     public string Extension { get; }
     public int Width { get; }
@@ -20,5 +23,7 @@ public class WiderpaperMetadata
         Height = image.Height;
 
         Extension = path.Split('.')[1];
+
+        State = ProcessingState.Loaded;
     }
 }

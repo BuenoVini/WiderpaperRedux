@@ -62,8 +62,34 @@
 			<span>@Math.Round(newSize / (1024 * 1024f), 2, MidpointRounding.ToEven) MB</span>
 		}
 	</td>
-	<td>
-		Ready
+	<td class="align-middle">
+		@switch (Image.State)
+		{
+			case WiderpaperMetadata.ProcessingState.Loaded:
+				<i class="bi bi-hourglass-top"></i>
+				break;
+			
+			case WiderpaperMetadata.ProcessingState.Processing:
+				<div class="spinner-border text-primary" role="status">
+					<span class="visually-hidden">Loading...</span>
+				</div>
+				break;
+				
+			case WiderpaperMetadata.ProcessingState.Done:
+				<div class="vstack gap-2 w-75">
+					<button @onclick="@OnClickPreviewImageBtnAsync" class="btn btn-sm btn-outline-success">
+						<i class="bi bi-eye-fill"></i>
+					</button>
+	
+					<button @onclick="@OnClickPreviewImageBtnAsync" class="btn btn-sm btn-outline-primary">
+						<i class="bi bi-box-arrow-up-right"></i>
+					</button>
+				</div>
+				break;
+			
+			default:
+				throw new ArgumentOutOfRangeException();
+		}
 	</td>
 </tr>
 
@@ -73,4 +99,6 @@
 	[Parameter, EditorRequired] public EventCallback<WiderpaperMetadata> OnClickDeleteRowBtnCallback { get; set; }
 
 	private async Task OnClickDeleteRowBtnAsync() => await OnClickDeleteRowBtnCallback.InvokeAsync(Image);
+
+	private async Task OnClickPreviewImageBtnAsync() => throw new NotImplementedException();
 }
