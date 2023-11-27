@@ -15,6 +15,10 @@ public partial class Index
 	
 	#region Fields
 	private List<WiderpaperMetadata> _loadedMetadataImages = new();
+	private List<string> _processedImagesPaths = new();	
+	// NOTE: maybe refactor _processedImagesPaths and make it a list of WiderpaperMetadata,
+	// then delete the WiderpaperImage class and move its content do WiderpaperMetadata, which
+	// would be the only DTO in the Widerpaper API
 
 	private Toast _toastFinishedProcessing;
     private Toast _toastUnselectedFiles;
@@ -50,13 +54,6 @@ public partial class Index
         return folderPath;
     }
 
-	private void SaveImage(WiderpaperImage img)
-    {
-        _previousOuputFileName = Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures), $"{(new DateTimeOffset(DateTime.UtcNow)).ToUnixTimeMilliseconds()}.jpg");
-
-        img.SaveImage(_previousOuputFileName);
-    }
-
     private string SetAlgorithmButtonsState(string tagClass, Algorithm algorithm, string tokenToReplace = "?")
         => tagClass.Replace(tokenToReplace, _algorithmChosen == algorithm ? "primary no-hover" : "secondary");
 
@@ -82,6 +79,9 @@ public partial class Index
 
 	private void OnClickDeleteRowBtn(WiderpaperMetadata imageToDelete) =>
 		_loadedMetadataImages.RemoveAt(_loadedMetadataImages.FindIndex(image => image.Path == imageToDelete.Path));
+
+	private async Task OnClickViewProcessedImageBtnAsync(WiderpaperMetadata imageToView) =>
+		await Launcher.Default.OpenAsync(_processedImagesPaths[_loadedMetadataImages.FindIndex(image => image.Path == imageToView.Path)]);
 
     private async Task OnClickOpenOutputFolderAsync() => 
 	    await Launcher.Default.OpenAsync(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures));
@@ -118,8 +118,10 @@ public partial class Index
 							await Task.Run(() => imgOutput = _shouldBlurTransition ? WiderpaperProcessing.ApplyGradientBlurMirror(imgInput, _blurStrenght) : WiderpaperProcessing.ApplyBlurMirror(imgInput, _blurStrenght));
 							break;
 					}
-					
-					SaveImage(imgOutput);
+
+					string newPath = Path.Combine(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures), $"{new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds()}.jpg");
+					imgOutput.SaveImage(newPath);
+					_processedImagesPaths.Add(newPath);
 			    }
 
 			    image.State = WiderpaperMetadata.ProcessingState.Done;
@@ -147,8 +149,9 @@ public partial class Index
 	#region On Change Handlers
 	private async Task OnChangeLoadImagesAsync(InputFileChangeEventArgs e)
     {
-        /* clearing the loaded images metadata list */
+        /* clearing the loaded images metadata and the processed images path lists */
         _loadedMetadataImages.Clear();
+        _processedImagesPaths.Clear();
 
 		/* checking for forbidden files selected by the user */
 		if (e.FileCount > _MAX_ALLOWED_FILES)
@@ -197,10 +200,5 @@ public partial class Index
         if (!bool.TryParse(e.Value.ToString(), out _shouldBlurTransition))
             _shouldBlurTransition = false;
     }
-    #endregion
-
-
-    #region Buttons Action
-    private async Task OpenProcessedImageAsync() => await Launcher.Default.OpenAsync(_previousOuputFileName);
     #endregion
 }

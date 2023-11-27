@@ -77,11 +77,11 @@
 				
 			case WiderpaperMetadata.ProcessingState.Done:
 				<div class="vstack gap-2 w-75">
-					<button @onclick="@OnClickPreviewImageBtnAsync" class="btn btn-sm btn-outline-success">
+					<button @onclick="@OnClickViewProcessedImageBtnAsync" class="btn btn-sm btn-outline-success">
 						<i class="bi bi-eye-fill"></i>
 					</button>
-	
-					<button @onclick="@OnClickPreviewImageBtnAsync" class="btn btn-sm btn-outline-primary">
+
+					<button @onclick="@OnClickOpenOutputFolderBtnAsync" class="btn btn-sm btn-outline-primary">
 						<i class="bi bi-box-arrow-up-right"></i>
 					</button>
 				</div>
@@ -96,9 +96,12 @@
 @code {
 	[Parameter, EditorRequired] public WiderpaperMetadata Image { get; set; }
 	[Parameter, EditorRequired] public Pages.Index.Upscaling UpscalingChosen { get; set; }
+
 	[Parameter, EditorRequired] public EventCallback<WiderpaperMetadata> OnClickDeleteRowBtnCallback { get; set; }
+	[Parameter, EditorRequired]	public EventCallback<WiderpaperMetadata> OnClickViewProcessedImageBtnCallback { get; set; }
+	[Parameter, EditorRequired]	public EventCallback<WiderpaperMetadata> OnClickOpenOutputFolderBtnCallback { get; set; }
 
 	private async Task OnClickDeleteRowBtnAsync() => await OnClickDeleteRowBtnCallback.InvokeAsync(Image);
-
-	private async Task OnClickPreviewImageBtnAsync() => throw new NotImplementedException();
+	private async Task OnClickViewProcessedImageBtnAsync() => await OnClickViewProcessedImageBtnCallback.InvokeAsync(Image);
+	private async Task OnClickOpenOutputFolderBtnAsync() => await OnClickOpenOutputFolderBtnCallback.InvokeAsync(Image);
 }

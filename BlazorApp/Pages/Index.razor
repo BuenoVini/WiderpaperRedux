@@ -158,7 +158,13 @@
                         <tbody>
 	                        @foreach (WiderpaperMetadata image in _loadedMetadataImages)
 	                        {
-	                            <TableRow Image="image" UpscalingChosen="_upscalingChosen" OnClickDeleteRowBtnCallback="OnClickDeleteRowBtn"/>
+		                        <TableRow Image="image" UpscalingChosen="_upscalingChosen" 
+		                                  OnClickDeleteRowBtnCallback="OnClickDeleteRowBtn" 
+		                                  OnClickViewProcessedImageBtnCallback="OnClickViewProcessedImageBtnAsync"
+		                                  OnClickOpenOutputFolderBtnCallback="OnClickOpenOutputFolderAsync" />
+		                        // NOTE: instead of TableRow having all the buttons and texts, I could use
+		                        // RenderFragment ChildComponent and use a for loop with index, to generate
+		                        // the content here on Index page --would not need EventsCallback
 	                        }
                         </tbody>
                     </table>
