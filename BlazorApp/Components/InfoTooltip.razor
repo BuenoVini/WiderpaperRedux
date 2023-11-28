@@ -3,17 +3,16 @@
 <i class="bi bi-info-circle-fill ms-1" style="font-size: 0.9rem"
    data-bs-toggle="tooltip" data-bs-placement="right"
    data-bs-custom-class="custom-tooltip"
-   data-bs-title=@Message
-   @ref="TooltipRef"></i>
+   data-bs-title="@Message"
+   @ref="_tooltipRef"></i>
 
 @code {
 	[Parameter, EditorRequired] public string Message { get; set; }
-
-	public ElementReference TooltipRef { get; private set; }
+	private ElementReference _tooltipRef;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		if (firstRender)
-			await JsRuntime.InvokeVoidAsync("ShowTooltipJS", TooltipRef);
+			await JsRuntime.InvokeVoidAsync("ShowTooltipJS", _tooltipRef);
 	}
 }

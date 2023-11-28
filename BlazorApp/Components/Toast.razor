@@ -1,6 +1,6 @@
 ﻿@inject IJSRuntime JsRuntime;
 
-<div id="liveToast" @ref="toastRef" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+<div id="liveToast" @ref="_toastRef" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
     <div class="toast-header">
         @switch (ToastValidation)
         {
@@ -31,7 +31,7 @@
     [Parameter] public Validation ToastValidation { get; set; }
     [Parameter] public RenderFragment Body { get; set; }
 
-    private ElementReference toastRef;
+    private ElementReference _toastRef;
 
-    public async Task ShowToastAsync() => await JsRuntime.InvokeVoidAsync("ShowToastJS", toastRef);
+    public async Task ShowToastAsync() => await JsRuntime.InvokeVoidAsync("ShowToastJS", _toastRef);
 }
