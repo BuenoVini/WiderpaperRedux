@@ -6,6 +6,7 @@ public class WiderpaperMetadata
     public ProcessingState State { get; set; }
     
     public string Path { get; }
+    public string PathThumbnail { get; }
     public string Extension { get; }
     public int Width { get; }
     public int Height { get; }
@@ -13,16 +14,19 @@ public class WiderpaperMetadata
 
     public WiderpaperMetadata(string path, long size)
     {
+        // TODO: perform file signature validation
+        
         Path = path;
         Size = size;
-        
-        // TODO: perform file signature validation
+        Extension = path.Split('.')[1];
 
         using Image image = Image.Load(path);
         Width = image.Width;
         Height = image.Height;
 
-        Extension = path.Split('.')[1];
+        image.Mutate(img => img.Resize(Width * 150 / Height, 150));
+        PathThumbnail = path.Split('.')[0] + "-thumbnail.webp";
+        image.SaveAsWebp(PathThumbnail);
 
         State = ProcessingState.Loaded;
     }
