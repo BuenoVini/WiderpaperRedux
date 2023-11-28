@@ -36,10 +36,10 @@ public partial class Index
 	private Format _formatChosen = Format.Original;
 
     private string _previousOuputFileName;
-    private int _blurStrenght = 25;
+    private int _blurStrength = 25;
 
     private bool _shouldBlurTransition = true;
-    private bool _isProcessingStarted = false;
+    private bool _isLoading = false;
     #endregion
 
 
@@ -94,7 +94,7 @@ public partial class Index
 		    return;
 	    }
 
-	    _isProcessingStarted = true;
+	    _isLoading = true;
 
 	    foreach (WiderpaperMetadata image in _loadedMetadataImages)
 	    {
@@ -115,7 +115,7 @@ public partial class Index
 							break;
 	
 						case Algorithm.BlurMirror:
-							await Task.Run(() => imgOutput = _shouldBlurTransition ? WiderpaperProcessing.ApplyGradientBlurMirror(imgInput, _blurStrenght) : WiderpaperProcessing.ApplyBlurMirror(imgInput, _blurStrenght));
+							await Task.Run(() => imgOutput = _shouldBlurTransition ? WiderpaperProcessing.ApplyGradientBlurMirror(imgInput, _blurStrength) : WiderpaperProcessing.ApplyBlurMirror(imgInput, _blurStrength));
 							break;
 					}
 
@@ -132,23 +132,23 @@ public partial class Index
 		    }
 	    }
 
-	    _isProcessingStarted = false;
+	    _isLoading = false;
     }
 	#endregion
 
 
 	#region On Input Handlers
-	private void OnInputBlurStrenght(ChangeEventArgs e)
+	private void OnInputBlurStrength(ChangeEventArgs e)
 	{
-		if (!int.TryParse(e.Value.ToString(), out _blurStrenght))
-			_blurStrenght = 5;
+		if (!int.TryParse(e.Value.ToString(), out _blurStrength))
+			_blurStrength = 5;
 	}
 	#endregion
 
 
 	#region On Change Handlers
 	private async Task OnChangeLoadImagesAsync(InputFileChangeEventArgs e)
-    {
+	{
         /* clearing the loaded images metadata and the processed images path lists */
         _loadedMetadataImages.Clear();
         _processedImagesPaths.Clear();
@@ -167,6 +167,8 @@ public partial class Index
 	        await _toastFileTooLarge.ShowToastAsync();
 	        return;
         }
+        
+        _isLoading = true;
 
         /* deleting previous images in wwwroot/images/ */
         foreach (FileInfo file in new DirectoryInfo("wwwroot/images").GetFiles())
@@ -193,7 +195,9 @@ public partial class Index
                 File.Delete(filePath);
             }
         }
-    }
+
+		_isLoading = false;
+	}
 
     private void OnChangeBlurTransition(ChangeEventArgs e)
     {
