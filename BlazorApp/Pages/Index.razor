@@ -100,10 +100,12 @@
 			<div class="alert alert-light text-center" role="alert">
 				Your images will be saved in 
 				<code>
-					<a @onclick="OnClickOpenOutputFolderAsync" class="icon-link icon-link-hover" href="#">
-						'MyPictures/Widerpaper'
-						<i class="bi bi-box-arrow-up-right" style="font-size: 1rem; position: relative; top: -4px;"></i>
-					</a>
+					<SpanTooltip Message="Open in Windows Explorer">
+						<a @onclick="OnClickOpenOutputFolderAsync" class="icon-link icon-link-hover" href="#">
+	                        'MyPictures/Widerpaper'
+	                        <i class="bi bi-box-arrow-up-right" style="font-size: 1rem; position: relative; top: -4px;"></i>
+	                    </a>
+					</SpanTooltip>
 				</code>
 			</div>
 

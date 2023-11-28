@@ -76,14 +76,18 @@
 				break;
 				
 			case WiderpaperMetadata.ProcessingState.Done:
-				<div class="vstack gap-2 w-75">
-					<button @onclick="@OnClickViewProcessedImageBtnAsync" class="btn btn-sm btn-outline-success">
-						<i class="bi bi-eye-fill"></i>
-					</button>
+				<div class="vstack gap-2">
+					<SpanTooltip Message="View processed image">
+						<button @onclick="@OnClickViewProcessedImageBtnAsync" class="btn btn-sm btn-outline-success w-75">
+							<i class="bi bi-eye-fill"></i>
+						</button>
+					</SpanTooltip>
 
-					<button @onclick="@OnClickOpenOutputFolderBtnAsync" class="btn btn-sm btn-outline-primary">
-						<i class="bi bi-box-arrow-up-right"></i>
-					</button>
+					<SpanTooltip Message="Open Widerpaper folder">
+						<button @onclick="@OnClickOpenOutputFolderBtnAsync" class="btn btn-sm btn-outline-primary w-75">
+                        	<i class="bi bi-box-arrow-up-right"></i>
+                        </button>
+					</SpanTooltip>
 				</div>
 				break;
 			

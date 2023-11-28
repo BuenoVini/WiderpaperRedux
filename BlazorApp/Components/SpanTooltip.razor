@@ -1,0 +1,20 @@
+﻿@inject IJSRuntime JsRuntime
+
+<span data-bs-toggle="tooltip" data-bs-placement="bottom" 
+      data-bs-custom-class="custom-tooltip" 
+      data-bs-title="@Message"
+      @ref="_popoverRef">
+    @ChildContent
+</span>
+
+@code {
+    [Parameter, EditorRequired] public string Message { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    private ElementReference _popoverRef;
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JsRuntime.InvokeVoidAsync("ShowTooltipJS", _popoverRef);
+    }
+}
