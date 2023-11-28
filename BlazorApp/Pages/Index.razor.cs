@@ -161,8 +161,8 @@ public partial class Index
         }
 		
 		// TODO: perform file signature validation
-
-        if (e.GetMultipleFiles().Any(file => file.Size > _MAX_FILE_SIZE))
+		
+        if (e.GetMultipleFiles(_MAX_ALLOWED_FILES).Any(file => file.Size > _MAX_FILE_SIZE))
         {
 	        await _toastFileTooLarge.ShowToastAsync();
 	        return;
