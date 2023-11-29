@@ -8,8 +8,8 @@ namespace BlazorApp.Pages;
 public partial class Index
 {
 	#region Constants
-	const int _MAX_FILE_SIZE = 10 * 1024 * 1024;
-    const int _MAX_ALLOWED_FILES = 20;
+	private const int _MAX_FILE_SIZE = 10 * 1024 * 1024;
+	private const int _MAX_ALLOWED_FILES = 20;
 	#endregion
 
 	
@@ -20,8 +20,6 @@ public partial class Index
 	// then delete the WiderpaperImage class and move its content do WiderpaperMetadata, which
 	// would be the only DTO in the Widerpaper API
 
-	private Toast _toastFinishedProcessing;
-    private Toast _toastUnselectedFiles;
     private Toast _toastUnsupportedFile;
     private Toast _toastFileTooLarge;
     private Toast _toastTooManyFiles;
@@ -35,7 +33,6 @@ public partial class Index
 	public enum Format { Original, Jpeg, Png }
 	private Format _formatChosen = Format.Original;
 
-    private string _previousOuputFileName;
     private int _blurStrength = 25;
 
     private bool _shouldBlurTransition = true;
@@ -44,7 +41,7 @@ public partial class Index
 
 
     #region Util Methods
-    private string GetWiderpaperFolderPath(Environment.SpecialFolder specialFolder)
+    private static string GetWiderpaperFolderPath(Environment.SpecialFolder specialFolder)
     {
         string folderPath = Path.Combine(Environment.GetFolderPath(specialFolder), "Widerpaper");
 
@@ -83,16 +80,13 @@ public partial class Index
 	private async Task OnClickViewProcessedImageBtnAsync(WiderpaperMetadata imageToView) =>
 		await Launcher.Default.OpenAsync(_processedImagesPaths[_loadedMetadataImages.FindIndex(image => image.Path == imageToView.Path)]);
 
-    private async Task OnClickOpenOutputFolderAsync() => 
+    private static async Task OnClickOpenOutputFolderAsync() => 
 	    await Launcher.Default.OpenAsync(GetWiderpaperFolderPath(Environment.SpecialFolder.MyPictures));
     
     private async Task OnClickStartProcessingAsync()
     {
 	    if (_loadedMetadataImages.Count <= 0)
-	    {
-		    await _toastUnselectedFiles.ShowToastAsync();
 		    return;
-	    }
 
 	    _isLoading = true;
 
@@ -140,7 +134,7 @@ public partial class Index
 	#region On Input Handlers
 	private void OnInputBlurStrength(ChangeEventArgs e)
 	{
-		if (!int.TryParse(e.Value.ToString(), out _blurStrength))
+		if (!int.TryParse(e.Value?.ToString(), out _blurStrength))
 			_blurStrength = 5;
 	}
 	#endregion
@@ -201,7 +195,7 @@ public partial class Index
 
     private void OnChangeBlurTransition(ChangeEventArgs e)
     {
-        if (!bool.TryParse(e.Value.ToString(), out _shouldBlurTransition))
+        if (!bool.TryParse(e.Value?.ToString(), out _shouldBlurTransition))
             _shouldBlurTransition = false;
     }
     #endregion
