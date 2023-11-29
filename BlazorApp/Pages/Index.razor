@@ -1,16 +1,25 @@
 ﻿@page "/"
 
 <div class="container px-0 m-0" >
-	<div class="row p-0" style="height:92vh; width: 96vw">
-		<div class="col-4" style="width: 320px">
+	<div class="row p-0">
+		<div class="col">
 
 			<!--APP LOGO-->
-			<div class="mb-4 text-center">
-				<img src="./splashicon.png" alt="Widerpaper Logo" style="height: 100px"/>
-				<br />
-				<h2>Widerpaper</h2>
-				<h3 class="fw-light">Redux</h3>
+			<div class="position-relative" style="height: 75px;">
+				<div class="position-absolute top-50 start-50 translate-middle">
+					<div class="hstack gap-3 mb-4 position-relative">
+						<img src="./splashicon.png" alt="Widerpaper Logo" style="height: 65px" />
+						<h2>Widerpaper</h2>
+						<h2 class="fw-light">Redux</h2>
+					</div>
+				</div>
 			</div>
+
+		</div>
+	</div>
+
+	<div class="row p-0" style="height: 84vh; width: 96vw">
+		<div class="col-4" style="width: 320px">
 
 			<!--MIRROR ALGORITHM BLOCK-->
 			<div class="alert alert-dark" role="alert">
@@ -146,7 +155,7 @@
 
             <!--LOADED IMAGES TABLE-->
             <div class="row">
-                <div class="col table-responsive" style="max-height: 300px;">
+                <div class="col table-responsive" style="max-height: 275px;">
                     <table class="table table-hover table-sm">
                         <thead style="position: sticky; top: 0">
                         <tr>
